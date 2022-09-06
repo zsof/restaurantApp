@@ -2,24 +2,27 @@ package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.repository.PlaceRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 @Transactional
-class PlaceService @Autowired constructor( private val placeRepository: PlaceRepository){
-    fun newPlace(newPlace: Place) : Place{
-       return placeRepository.save(newPlace)
+class PlaceService(private val placeRepository: PlaceRepository) {
+    fun newPlace(newPlace: Place) = placeRepository.save(newPlace)
 
+    //mutablelist-->list
+    fun getAllPlace(): List<Place> = placeRepository.findAll()
+
+    fun getPlaceById(id: Long) = placeRepository.findById(id)
+
+    fun deleteById(id: Long): Boolean {
+        return if (placeRepository.existsById(id)) {
+            placeRepository.deleteById(id)
+            true
+        } else {
+            false
+        }
     }
 
-    fun getAllPlace() : MutableList<Place>{
-        return placeRepository.findAll()
-    }
-
-    fun getPlaceById(id :Int): Optional<Place> {
-        return placeRepository.findById(id)
-    }
+    fun deleteAll() = placeRepository.deleteAll()
 }
