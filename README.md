@@ -1,2 +1,2 @@
 # restaurantApp
-Restauran registration application - developed in Kotlin, JetpackCompose
+Restauran registration application backend - developed in Koltin Spring Boot
