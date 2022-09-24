@@ -3,7 +3,7 @@ package hu.zsof.restaurantApp.model
 import javax.persistence.*
 
 @Embeddable
-data class Filter(
+class Filter(
 
     var freeParking: Boolean = false,
     var glutenFree: Boolean = false,
@@ -13,7 +13,7 @@ data class Filter(
     var fastFood: Boolean = false,
 
     var parkingAvailable: Boolean = false,
-    var dogFancier: Boolean = false,
+    var dogFriendly: Boolean = false,
     var familyPlace: Boolean = false,
     var delivery: Boolean = false,
     var creditCard: Boolean = false,
