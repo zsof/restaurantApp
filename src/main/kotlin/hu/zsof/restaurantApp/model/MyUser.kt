@@ -10,10 +10,15 @@ class MyUser(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, name = "myuser_id")
     val id: Long = 0,
-    val name: String = "",
+    var name: String = "",
     var nickName: String? = null,
     val email: String = "",
-    val admin: Boolean = false,
+    var password: String = "",
+    var image: String? = null,
+    var isAdmin: Boolean = false,
+
+
+
 
     @ManyToMany
     @JoinTable(
@@ -30,7 +35,8 @@ fun MyUser.convertToDto(): UserDto {
         this.name,
         this.nickName,
         this.email,
-        this.admin,
+        this.image,
+        this.isAdmin,
         this.favPlaces.convertToDto()
     )
 }

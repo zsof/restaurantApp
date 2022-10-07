@@ -5,6 +5,7 @@ class UserDto(
     val name: String = "",
     val nickName: String? = null,
     val email: String = "",
+    val image: String? = null,
     val admin: Boolean = false,
     val favPlaces: MutableList<PlaceDto> = mutableListOf()
 )

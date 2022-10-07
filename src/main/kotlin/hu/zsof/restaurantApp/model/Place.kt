@@ -19,6 +19,8 @@ class Place(
     val price: Float? = 2.0f,
     val image: String? = null,
 
+    //accepted: Boolean = false todo
+
     val category: Category = Category.RESTAURANT,
 
     @Embedded
