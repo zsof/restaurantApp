@@ -17,9 +17,6 @@ class MyUser(
     var image: String? = null,
     var isAdmin: Boolean = false,
 
-
-
-
     @ManyToMany
     @JoinTable(
         name = "favPlaces",

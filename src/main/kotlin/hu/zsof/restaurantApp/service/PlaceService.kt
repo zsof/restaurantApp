@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class PlaceService(private val placeRepository: PlaceRepository) {
     fun newPlace(newPlace: Place) = placeRepository.save(newPlace)
+    //TODO ??
 
     //mutablelist-->list
     fun getAllPlace(): MutableList<Place> = placeRepository.findAll()

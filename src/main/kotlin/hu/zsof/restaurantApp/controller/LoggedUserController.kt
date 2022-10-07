@@ -50,9 +50,9 @@ class LoggedUserController(
         return ResponseEntity(placeAdded.get(), HttpStatus.OK)
     }
 
-    @GetMapping("favplaces")
+   /* @GetMapping("favplaces")
     fun getUserFavPlaces(@CookieValue(AuthUtils.COOKIE_NAME) token: String?) {
-    }
+    }*/
 
     @PostMapping()
     fun newPlace(@RequestBody place: Place, @CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<Place> {

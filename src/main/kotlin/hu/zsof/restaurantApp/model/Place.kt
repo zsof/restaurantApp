@@ -2,6 +2,7 @@ package hu.zsof.restaurantApp.model
 
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.model.enum.Category
+import hu.zsof.restaurantApp.model.enum.Price
 import javax.persistence.*
 
 @Entity
@@ -16,10 +17,10 @@ class Place(
 
     var address: String? = null,
     var rate: Float? = 2.0f,
-    val price: Float? = 2.0f,
+    val price: Price = Price.LOW,
     val image: String? = null,
 
-    //accepted: Boolean = false todo
+    // accepted: Boolean = false todo
 
     val category: Category = Category.RESTAURANT,
 
