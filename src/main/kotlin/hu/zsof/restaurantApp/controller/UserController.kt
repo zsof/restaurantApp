@@ -14,19 +14,6 @@ import java.util.*
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
 
-   /* @PostMapping()
-    fun createUser(
-        @RequestBody user: MyUser,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<UserDto> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-        val newUser = userService.createUser(user)
-        return ResponseEntity(newUser.convertToDto(), HttpStatus.CREATED)
-    }*/
-
     @GetMapping("/{id}")
     fun getUserById(
         @PathVariable id: Long,

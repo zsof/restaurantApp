@@ -17,15 +17,15 @@ class Place(
 
     var address: String? = null,
     var rate: Float? = 2.0f,
-    val price: Price = Price.LOW,
-    val image: String? = null,
+    var price: Price = Price.LOW,
+    var image: String? = null,
 
     // accepted: Boolean = false todo
 
-    val category: Category = Category.RESTAURANT,
+    var category: Category = Category.RESTAURANT,
 
     @Embedded
-    val filter: Filter = Filter(),
+    var filter: Filter = Filter(),
 
     @ManyToMany(mappedBy = "favPlaces")
     val users: MutableList<MyUser> = mutableListOf()

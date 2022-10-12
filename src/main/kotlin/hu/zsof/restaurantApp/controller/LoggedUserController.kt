@@ -33,29 +33,32 @@ class LoggedUserController(
         return ResponseEntity(updatedUser.get(), HttpStatus.OK)
     }
 
-    @GetMapping("add-favplace/{placeId}")
-    fun addFavPlaceForUser(
-        @PathVariable placeId: Long,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<UserDto> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
+    /* @GetMapping("add-favplace/{placeId}")
+     fun addFavPlaceForUser(
+         @PathVariable placeId: Long,
+         @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+     ): ResponseEntity<UserDto> {
+         val verification = AuthUtils.verifyToken(token)
+         if (!verification.verified) {
+             return ResponseEntity(HttpStatus.UNAUTHORIZED)
+         }
 
-        val placeAdded = userService.addFavPlace(verification.userId, Place(placeId))
-        if (!placeAdded.isPresent) {
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
-        }
-        return ResponseEntity(placeAdded.get(), HttpStatus.OK)
-    }
+         val placeAdded = userService.addFavPlace(verification.userId, Place(placeId))
+         if (!placeAdded.isPresent) {
+             return ResponseEntity(HttpStatus.BAD_REQUEST)
+         }
+         return ResponseEntity(placeAdded.get(), HttpStatus.OK)
+     }*/
 
-   /* @GetMapping("favplaces")
-    fun getUserFavPlaces(@CookieValue(AuthUtils.COOKIE_NAME) token: String?) {
-    }*/
+    /* @GetMapping("favplaces")
+     fun getUserFavPlaces(@CookieValue(AuthUtils.COOKIE_NAME) token: String?) {
+     }*/
 
     @PostMapping()
-    fun newPlace(@RequestBody place: Place, @CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<Place> {
+    fun newPlace(
+        @RequestBody place: Place,
+        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+    ): ResponseEntity<Unit> { // ResponseEntity<Place> ??
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)

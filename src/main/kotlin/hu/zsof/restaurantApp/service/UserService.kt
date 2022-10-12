@@ -28,17 +28,17 @@ class UserService(private val userRepository: UserRepository) {
 
     fun deleteAllUser() = userRepository.deleteAll()
 
-    fun updateProfile(userId: Long, userProfileDto: UserProfileDto): Optional<UserDto> {
+    fun updateProfile(userId: Long, updateUserProfileDto: UserProfileDto): Optional<UserDto> {
         val userOptional = userRepository.findById(userId)
         if (!userOptional.isPresent) {
             return Optional.empty()
         }
         val updateUser = userOptional.get()
-        updateUser.password = userProfileDto.password ?: updateUser.password
-        updateUser.image = userProfileDto.image ?: updateUser.image
-        updateUser.name = userProfileDto.name ?: updateUser.name
+        updateUser.password = updateUserProfileDto.password ?: updateUser.password
+        updateUser.image = updateUserProfileDto.image ?: updateUser.image
+        updateUser.name = updateUserProfileDto.name ?: updateUser.name
 
-        updateUser.isAdmin = false
+        //updateUser.isAdmin = false
         return Optional.of(userRepository.save(updateUser).convertToDto())
     }
 
