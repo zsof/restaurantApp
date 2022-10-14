@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user")  //Todo lehetne valami loggedUser
 class LoggedUserController(
     private val userService: UserService,
     private val placeService: PlaceService
