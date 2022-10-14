@@ -2,6 +2,7 @@ package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.model.Place
+import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -9,16 +10,16 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class PlaceService(private val placeRepository: PlaceRepository) {
-    fun newPlace(newPlace: Place) {
+    fun newPlace(newPlace: Place): PlaceDto {
         val theNewPlace = Place()
         theNewPlace.name = newPlace.name
         theNewPlace.address = newPlace.address
-        theNewPlace.category = newPlace.category
+        theNewPlace.type = newPlace.type
         theNewPlace.rate = newPlace.rate
         theNewPlace.price = newPlace.price
         theNewPlace.image = newPlace.image
         theNewPlace.filter = newPlace.filter
-        placeRepository.save(newPlace)
+        return placeRepository.save(newPlace).convertToDto()
     }
 
     fun getAllPlace(): MutableList<Place> = placeRepository.findAll()

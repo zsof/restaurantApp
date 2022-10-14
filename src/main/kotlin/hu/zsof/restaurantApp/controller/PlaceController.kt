@@ -20,7 +20,7 @@ class PlaceController(private val placeService: PlaceService) {
         @CookieValue(AuthUtils.COOKIE_NAME) token: String?
     ): ResponseEntity<PlaceDto?> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified || !verification.isAdmin) { // TODO ne csak admin érje el
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
         val place: Optional<Place> = placeService.getPlaceById(id)
@@ -33,7 +33,7 @@ class PlaceController(private val placeService: PlaceService) {
     @GetMapping
     fun getAllPlace(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceDto>> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified || !verification.isAdmin) { //TODO ne csak admin érje el
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
         val places: MutableList<Place> = placeService.getAllPlace()

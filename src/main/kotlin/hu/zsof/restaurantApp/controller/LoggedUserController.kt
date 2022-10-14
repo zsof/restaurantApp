@@ -1,8 +1,10 @@
 package hu.zsof.restaurantApp.controller
 
+import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.dto.UserProfileDto
 import hu.zsof.restaurantApp.model.Place
+import hu.zsof.restaurantApp.model.extension.Response
 import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.service.UserService
 import hu.zsof.restaurantApp.util.AuthUtils
@@ -54,11 +56,11 @@ class LoggedUserController(
      fun getUserFavPlaces(@CookieValue(AuthUtils.COOKIE_NAME) token: String?) {
      }*/
 
-    @PostMapping()
+    @PostMapping("newplace")
     fun newPlace(
         @RequestBody place: Place,
         @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<Unit> { // ResponseEntity<Place> ??
+    ): ResponseEntity<PlaceDto> { //  ??
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
@@ -66,4 +68,6 @@ class LoggedUserController(
         val newPlace = placeService.newPlace(place)
         return ResponseEntity(newPlace, HttpStatus.CREATED)
     }
+
+    //TODO getOwnProfile() -- tokenből szedi ki a userId-t és csak őt kéri el - pl profile megynitásnál
 }

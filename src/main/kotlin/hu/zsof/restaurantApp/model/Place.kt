@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp.model
 
 import hu.zsof.restaurantApp.dto.PlaceDto
-import hu.zsof.restaurantApp.model.enum.Category
+import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
 import javax.persistence.*
 
@@ -22,7 +22,7 @@ class Place(
 
     // accepted: Boolean = false todo
 
-    var category: Category = Category.RESTAURANT,
+    var type: Type = Type.RESTAURANT,
 
     @Embedded
     var filter: Filter = Filter(),
@@ -39,7 +39,7 @@ fun Place.convertToDto(): PlaceDto {
         this.rate,
         this.price,
         this.image,
-        this.category,
+        this.type,
         this.filter
     )
 }

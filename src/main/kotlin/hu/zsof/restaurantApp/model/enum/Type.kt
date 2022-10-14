@@ -1,7 +1,8 @@
 package hu.zsof.restaurantApp.model.enum
 
-enum class Category {
+enum class Type {
     RESTAURANT,
     CAFE,
-    PATISSERIE
+    PATISSERIE,
+    BAKERY
 }
