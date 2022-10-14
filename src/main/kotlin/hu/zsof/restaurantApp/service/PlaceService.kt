@@ -15,7 +15,6 @@ class PlaceService(private val placeRepository: PlaceRepository) {
         theNewPlace.name = newPlace.name
         theNewPlace.address = newPlace.address
         theNewPlace.type = newPlace.type
-        theNewPlace.rate = newPlace.rate
         theNewPlace.price = newPlace.price
         theNewPlace.image = newPlace.image
         theNewPlace.filter = newPlace.filter
