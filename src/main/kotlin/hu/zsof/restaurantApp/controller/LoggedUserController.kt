@@ -2,9 +2,9 @@ package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.UserDto
-import hu.zsof.restaurantApp.dto.UserProfileDto
+import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.model.extension.Response
+import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.service.UserService
 import hu.zsof.restaurantApp.util.AuthUtils
@@ -13,26 +13,45 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/user")  //Todo lehetne valami loggedUser
+@RequestMapping("/loggeduser")  //Todo lehetne valami loggedUser
 class LoggedUserController(
-    private val userService: UserService,
-    private val placeService: PlaceService
+        private val userService: UserService,
+        private val placeService: PlaceService
 ) {
-    @PutMapping("update")
+    /**
+     * These functions are available for logged users and admins
+     */
+
+    @PutMapping("update-profile")
     fun updateProfile(
-        @RequestBody userProfile: UserProfileDto,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @RequestBody userUpdateProfileDto: UserUpdateProfileDto,
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
     ): ResponseEntity<UserDto> {
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
 
-        val updatedUser = userService.updateProfile(verification.userId, userProfile)
+        val updatedUser = userService.updateProfile(verification.userId, userUpdateProfileDto)
         if (!updatedUser.isPresent) {
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         }
         return ResponseEntity(updatedUser.get(), HttpStatus.OK)
+    }
+
+    @GetMapping("get-profile")
+    fun getUserProfile(
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+    ): ResponseEntity<UserDto> {
+        val verification = AuthUtils.verifyToken(token)
+        if (!verification.verified) {
+            return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        }
+        val getUser = userService.getUserById(verification.userId)
+        if (!getUser.isPresent) {
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+        return ResponseEntity(getUser.get().convertToDto(), HttpStatus.OK)
     }
 
     /* @GetMapping("add-favplace/{placeId}")
@@ -56,11 +75,11 @@ class LoggedUserController(
      fun getUserFavPlaces(@CookieValue(AuthUtils.COOKIE_NAME) token: String?) {
      }*/
 
-    @PostMapping("newplace")
+    @PostMapping("new-place")
     fun newPlace(
-        @RequestBody place: Place,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<PlaceDto> { //  ??
+            @RequestBody place: Place,
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+    ): ResponseEntity<PlaceDto> {
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
@@ -68,6 +87,4 @@ class LoggedUserController(
         val newPlace = placeService.newPlace(place)
         return ResponseEntity(newPlace, HttpStatus.CREATED)
     }
-
-    //TODO getOwnProfile() -- tokenből szedi ki a userId-t és csak őt kéri el - pl profile megynitásnál
 }

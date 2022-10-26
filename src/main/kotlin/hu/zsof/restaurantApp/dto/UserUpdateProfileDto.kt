@@ -1,6 +1,6 @@
 package hu.zsof.restaurantApp.dto
 
-class UserProfileDto(
+class UserUpdateProfileDto(
     val name: String?,
     val nickName: String?,
     val password: String?,

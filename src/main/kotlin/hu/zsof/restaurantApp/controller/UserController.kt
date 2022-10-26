@@ -13,6 +13,9 @@ import java.util.*
 @RestController
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
+    /**
+     * These functions are available just for admins
+     */
 
     @GetMapping("/{id}")
     fun getUserById(

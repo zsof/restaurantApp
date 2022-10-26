@@ -14,13 +14,16 @@ import java.util.*
 @RequestMapping("/places")
 class PlaceController(private val placeService: PlaceService) {
 
+    /**
+     * Available for users and admins
+     */
     @GetMapping("/{id}")
     fun getPlaceById(
-        @PathVariable id: Long,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @PathVariable id: Long,
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
     ): ResponseEntity<PlaceDto?> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) { // TODO ne csak admin érje el
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
         val place: Optional<Place> = placeService.getPlaceById(id)
@@ -30,20 +33,26 @@ class PlaceController(private val placeService: PlaceService) {
         return ResponseEntity(place.get().convertToDto(), HttpStatus.OK)
     }
 
+    /**
+     * Available for users and admins
+     */
     @GetMapping
     fun getAllPlace(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceDto>> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) { //TODO ne csak admin érje el
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
         val places: MutableList<Place> = placeService.getAllPlace()
         return ResponseEntity<List<PlaceDto>>(places.convertToDto(), HttpStatus.OK)
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Available just for admins
+     */
+    @DeleteMapping("delete/{id}")
     fun deleteById(
-        @PathVariable id: Long,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @PathVariable id: Long,
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
     ): ResponseEntity<HttpStatus> {
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified || !verification.isAdmin) {
@@ -52,15 +61,5 @@ class PlaceController(private val placeService: PlaceService) {
         return if (placeService.deletePlaceById(id)) {
             ResponseEntity(HttpStatus.OK)
         } else ResponseEntity(HttpStatus.NOT_FOUND)
-    }
-
-    @DeleteMapping
-    fun deleteAllPlace(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<HttpStatus> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-        placeService.deleteAll()
-        return ResponseEntity(HttpStatus.OK)
     }
 }

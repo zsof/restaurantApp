@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.dto.UserDto
-import hu.zsof.restaurantApp.dto.UserProfileDto
+import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
@@ -21,22 +21,22 @@ class UserService(private val userRepository: UserRepository) {
     fun getAllUser(): MutableList<MyUser> = userRepository.findAll()
 
     fun getUserById(id: Long) = userRepository.findById(id)
-
     fun getUserByEmail(email: String) = userRepository.findUserByEmail(email)
 
     fun deleteUserById(id: Long) = userRepository.deleteById(id)
 
     fun deleteAllUser() = userRepository.deleteAll()
 
-    fun updateProfile(userId: Long, updateUserProfileDto: UserProfileDto): Optional<UserDto> {
+    fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): Optional<UserDto> {
         val userOptional = userRepository.findById(userId)
         if (!userOptional.isPresent) {
             return Optional.empty()
         }
         val updateUser = userOptional.get()
-        updateUser.password = updateUserProfileDto.password ?: updateUser.password
-        updateUser.image = updateUserProfileDto.image ?: updateUser.image
-        updateUser.name = updateUserProfileDto.name ?: updateUser.name
+        updateUser.password = userUpdateProfileDto.password ?: updateUser.password
+        updateUser.image = userUpdateProfileDto.image ?: updateUser.image
+        updateUser.name = userUpdateProfileDto.name ?: updateUser.name
+        updateUser.nickName = userUpdateProfileDto.nickName ?: updateUser.nickName
 
         //updateUser.isAdmin = false
         return Optional.of(userRepository.save(updateUser).convertToDto())
