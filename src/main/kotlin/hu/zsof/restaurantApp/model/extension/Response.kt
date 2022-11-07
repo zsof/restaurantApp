@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp.model.extension
 
 class Response(
-    val success: Boolean = true,
-    val errorMessage: String = "",
-    val successMessage: String = ""
+        val isSuccess: Boolean = true,
+        val success: String = "",
+        val error: String = ""
 )

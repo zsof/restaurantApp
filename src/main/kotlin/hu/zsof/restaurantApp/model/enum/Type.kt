@@ -4,5 +4,7 @@ enum class Type {
     RESTAURANT,
     CAFE,
     PATISSERIE,
-    BAKERY
+    BAKERY,
+    BAR,
+    FAST_FOOD
 }

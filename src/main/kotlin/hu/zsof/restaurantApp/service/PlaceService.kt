@@ -18,6 +18,7 @@ class PlaceService(private val placeRepository: PlaceRepository) {
         theNewPlace.price = newPlace.price
         theNewPlace.image = newPlace.image
         theNewPlace.filter = newPlace.filter
+        theNewPlace.phoneNumber = newPlace.phoneNumber
         return placeRepository.save(newPlace).convertToDto()
     }
 

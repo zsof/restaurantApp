@@ -12,5 +12,6 @@ class PlaceDto(
     val price: Price = Price.LOW,
     val image: String? = null,
     val type: Type = Type.RESTAURANT,
-    val filter: Filter = Filter()
+    val filter: Filter = Filter(),
+    val phoneNumber: String? = ""
 )

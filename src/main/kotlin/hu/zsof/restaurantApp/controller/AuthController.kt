@@ -48,7 +48,7 @@ class AuthController @Autowired constructor(private val userService: UserService
         }
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {
             try {
-                userService.createUser(MyUser(email = loginData.email, password = loginData.password))
+                userService.createUser(MyUser(email = loginData.email, password = loginData.password, name = loginData.name, nickName = loginData.nickName))
             } catch (e: DataIntegrityViolationException) {
                 return ResponseEntity(Response(false, "Email is already in use", ""), HttpStatus.BAD_REQUEST)
             }

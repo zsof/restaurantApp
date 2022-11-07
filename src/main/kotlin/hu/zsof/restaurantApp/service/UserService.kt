@@ -20,7 +20,7 @@ class UserService(private val userRepository: UserRepository) {
 
     fun getAllUser(): MutableList<MyUser> = userRepository.findAll()
 
-    fun getUserById(id: Long) = userRepository.findById(id)
+    fun getUserById(id: Long): Optional<MyUser> = userRepository.findById(id)
     fun getUserByEmail(email: String) = userRepository.findUserByEmail(email)
 
     fun deleteUserById(id: Long) = userRepository.deleteById(id)
