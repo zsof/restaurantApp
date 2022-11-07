@@ -20,6 +20,8 @@ class Place(
         var price: Price = Price.LOW,
         var image: String? = null,
         var phoneNumber: String? = null,
+        var email: String? = null,
+        var web: String? = null,
 
         // accepted: Boolean = false todo
 
