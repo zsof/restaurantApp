@@ -13,7 +13,7 @@ class MyUser(
         var name: String = "",
         var nickName: String? = null,
         @Column(unique = true)
-        val email: String = "",
+        var email: String = "",
         var password: String = "",
         var image: String? = null,
         var isAdmin: Boolean = false,

@@ -37,6 +37,7 @@ class UserService(private val userRepository: UserRepository) {
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.nickName = userUpdateProfileDto.nickName ?: updateUser.nickName
+        updateUser.email = userUpdateProfileDto.email ?: updateUser.email
 
         //updateUser.isAdmin = false
         return Optional.of(userRepository.save(updateUser).convertToDto())
