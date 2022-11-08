@@ -24,7 +24,7 @@ class AuthController @Autowired constructor(private val userService: UserService
     @PostMapping("/login")
     fun login(@RequestBody loginData: LoginData, response: HttpServletResponse): ResponseEntity<Response> {
         if (loginData.email.isNullOrEmpty() || loginData.password.isNullOrEmpty()) {
-            return ResponseEntity(Response(false, "Email or password is empty"), HttpStatus.BAD_REQUEST)
+            return ResponseEntity(Response(false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
         }
         val getUser = userService.getUserByEmail(email = loginData.email)
         if (getUser.isPresent) {
@@ -33,28 +33,28 @@ class AuthController @Autowired constructor(private val userService: UserService
                 val token = AuthUtils.createToken(user.id, user.isAdmin)
                 val cookie = Cookie(AuthUtils.COOKIE_NAME, token)
                 response.addCookie(cookie)
-                return ResponseEntity(Response(true, "", "Login is successful"), HttpStatus.OK)
+                return ResponseEntity(Response(true, "Login is successful", ""), HttpStatus.OK)
             }
-            return ResponseEntity(Response(false, "Email or password is wrong", ""), HttpStatus.UNAUTHORIZED)
+            return ResponseEntity(Response(false, "", "Email or password is wrong"), HttpStatus.UNAUTHORIZED)
         } else {
-            return ResponseEntity(Response(false, "User not found", ""), HttpStatus.NOT_FOUND)
+            return ResponseEntity(Response(false, "", "User not found"), HttpStatus.NOT_FOUND)
         }
     }
 
     @PostMapping("/register")
     fun register(@RequestBody loginData: LoginData): ResponseEntity<Response> {
         if (loginData.email.isNullOrEmpty() || loginData.password.isNullOrEmpty()) {
-            return ResponseEntity(Response(false, "Email or password is empty"), HttpStatus.BAD_REQUEST)
+            return ResponseEntity(Response(false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
         }
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {
             try {
                 userService.createUser(MyUser(email = loginData.email, password = loginData.password, name = loginData.name, nickName = loginData.nickName))
             } catch (e: DataIntegrityViolationException) {
-                return ResponseEntity(Response(false, "Email is already in use", ""), HttpStatus.BAD_REQUEST)
+                return ResponseEntity(Response(false, "", "Email is already in use"), HttpStatus.BAD_REQUEST)
             }
-            return ResponseEntity(Response(true, "", "Register is successful"), HttpStatus.CREATED)
+            return ResponseEntity(Response(true, "Register is successful", ""), HttpStatus.CREATED)
         } else {
-            return ResponseEntity(Response(false, "Email or password is invalid", ""), HttpStatus.BAD_REQUEST)
+            return ResponseEntity(Response(false, "", "Email or password is invalid"), HttpStatus.BAD_REQUEST)
         }
     }
 }
