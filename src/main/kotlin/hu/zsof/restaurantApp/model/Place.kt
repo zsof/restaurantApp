@@ -43,7 +43,10 @@ fun Place.convertToDto(): PlaceDto {
             this.price,
             this.image,
             this.type,
-            this.filter
+            this.filter,
+            this.phoneNumber,
+            this.email,
+            this.web
     )
 }
 

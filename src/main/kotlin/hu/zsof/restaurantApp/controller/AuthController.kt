@@ -24,7 +24,7 @@ class AuthController @Autowired constructor(private val userService: UserService
     @PostMapping("/login")
     fun login(@RequestBody loginData: LoginData, response: HttpServletResponse): ResponseEntity<Response> {
         if (loginData.email.isNullOrEmpty() || loginData.password.isNullOrEmpty()) {
-            return ResponseEntity(Response(false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
+            return ResponseEntity(Response(isSuccess= false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
         }
         val getUser = userService.getUserByEmail(email = loginData.email)
         if (getUser.isPresent) {
@@ -33,7 +33,7 @@ class AuthController @Autowired constructor(private val userService: UserService
                 val token = AuthUtils.createToken(user.id, user.isAdmin)
                 val cookie = Cookie(AuthUtils.COOKIE_NAME, token)
                 response.addCookie(cookie)
-                return ResponseEntity(Response(true, "Login is successful", ""), HttpStatus.OK)
+                return ResponseEntity(Response(isSuccess = true, successMessage= "Login is successful", error = ""), HttpStatus.OK)
             }
             return ResponseEntity(Response(false, "", "Email or password is wrong"), HttpStatus.UNAUTHORIZED)
         } else {
