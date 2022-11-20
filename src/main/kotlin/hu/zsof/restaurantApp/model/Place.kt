@@ -1,6 +1,7 @@
 package hu.zsof.restaurantApp.model
 
 import hu.zsof.restaurantApp.dto.PlaceDto
+import hu.zsof.restaurantApp.dto.PlaceMapDto
 import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
 import javax.persistence.*
@@ -22,16 +23,15 @@ class Place(
         var phoneNumber: String? = null,
         var email: String? = null,
         var web: String? = null,
-
-        // accepted: Boolean = false todo
+        var latitude: Double = 0.0,
+        var longitude: Double = 0.0,
+        var usersNumber: Int = 0,
 
         var type: Type = Type.RESTAURANT,
 
         @Embedded
-        var filter: Filter = Filter(),
+        var filter: Filter = Filter()
 
-        @ManyToMany(mappedBy = "favPlaces")
-        val users: MutableList<MyUser> = mutableListOf()
 )
 
 fun Place.convertToDto(): PlaceDto {
@@ -46,7 +46,8 @@ fun Place.convertToDto(): PlaceDto {
             this.filter,
             this.phoneNumber,
             this.email,
-            this.web
+            this.web,
+            this.usersNumber
     )
 }
 
@@ -56,4 +57,22 @@ fun MutableList<Place>.convertToDto(): MutableList<PlaceDto> {
         placeDtos.add(it.convertToDto())
     }
     return placeDtos
+}
+
+fun Place.convertToPlaceMapDto(): PlaceMapDto {
+    return PlaceMapDto(
+            this.id,
+            this.name,
+            this.address,
+            this.latitude,
+            this.longitude
+    )
+}
+
+fun MutableList<Place>.convertToPlaceMapDto(): MutableList<PlaceMapDto> {
+    val placeMapDtos = mutableListOf<PlaceMapDto>()
+    this.forEach {
+        placeMapDtos.add(it.convertToPlaceMapDto())
+    }
+    return placeMapDtos
 }

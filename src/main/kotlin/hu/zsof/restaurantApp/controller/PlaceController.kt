@@ -1,8 +1,10 @@
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.dto.PlaceDto
+import hu.zsof.restaurantApp.dto.PlaceMapDto
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
+import hu.zsof.restaurantApp.model.convertToPlaceMapDto
 import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.util.AuthUtils
 import org.springframework.http.HttpStatus
@@ -49,6 +51,16 @@ class PlaceController(private val placeService: PlaceService) {
     /**
      * Available just for admins
      */
+    @GetMapping("/map")
+    fun getAllPlacesInMap(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceMapDto>> {
+        val verification = AuthUtils.verifyToken(token)
+        if (!verification.verified) {
+            return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        }
+        val places: MutableList<Place> = placeService.getAllPlace()
+        return ResponseEntity<List<PlaceMapDto>>(places.convertToPlaceMapDto(), HttpStatus.OK)
+    }
+
     @DeleteMapping("delete/{id}")
     fun deleteById(
             @PathVariable id: Long,
