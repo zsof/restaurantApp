@@ -15,5 +15,6 @@ class PlaceDto(
         val filter: Filter = Filter(),
         val phoneNumber: String? = "",
         var email: String? = "",
-        var web: String? = ""
+        var web: String? = "",
+        var usersNumber: Int = 0
 )

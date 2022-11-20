@@ -18,13 +18,8 @@ class MyUser(
         var image: String? = null,
         var isAdmin: Boolean = false,
 
-        @ManyToMany
-        @JoinTable(
-                name = "favPlaces",
-                joinColumns = [JoinColumn(name = "myuser_id", referencedColumnName = "myuser_id")],
-                inverseJoinColumns = [JoinColumn(name = "place_id", referencedColumnName = "place_id")]
-        )
-        var favPlaces: MutableList<Place> = mutableListOf()
+        @ElementCollection
+        var favPlaceIds: MutableList<Long> = mutableListOf()
 )
 
 fun MyUser.convertToDto(): UserDto {
@@ -35,7 +30,7 @@ fun MyUser.convertToDto(): UserDto {
             this.email,
             this.image,
             this.isAdmin,
-            this.favPlaces.convertToDto()
+            this.favPlaceIds
     )
 }
 

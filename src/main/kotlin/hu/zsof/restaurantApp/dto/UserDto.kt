@@ -1,11 +1,11 @@
 package hu.zsof.restaurantApp.dto
 
 class UserDto(
-    val id: Long = 0,
-    val name: String = "",
-    val nickName: String? = null,
-    val email: String = "",
-    val image: String? = null,
-    val admin: Boolean = false,
-    val favPlaces: MutableList<PlaceDto> = mutableListOf()
+        val id: Long = 0,
+        val name: String = "",
+        val nickName: String? = null,
+        val email: String = "",
+        val image: String? = null,
+        val admin: Boolean = false,
+        val favPlaceIds: MutableList<Long> = mutableListOf()
 )
