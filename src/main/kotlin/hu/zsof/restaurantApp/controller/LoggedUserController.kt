@@ -9,6 +9,7 @@ import hu.zsof.restaurantApp.model.extension.Response
 import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.service.UserService
 import hu.zsof.restaurantApp.util.AuthUtils
+import org.apache.catalina.User
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -59,18 +60,18 @@ class LoggedUserController(
     fun addFavPlaceForUser(
             @PathVariable placeId: Long,
             @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<PlaceDto> {
+    ): ResponseEntity<UserDto> {
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
 
-        val modifiedPlace = userService.addFavPlace(verification.userId, placeId)
-        if (!modifiedPlace.isPresent) {
+        val modifiedUser = userService.addFavPlace(verification.userId, placeId)
+        if (!modifiedUser.isPresent) {
             return ResponseEntity(HttpStatus.BAD_REQUEST)
         }
 
-        return ResponseEntity<PlaceDto>(modifiedPlace.get(), HttpStatus.OK)
+        return ResponseEntity<UserDto>(modifiedUser.get(), HttpStatus.OK)
     }
 
     @GetMapping("favplaces")

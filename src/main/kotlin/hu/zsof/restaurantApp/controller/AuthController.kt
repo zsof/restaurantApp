@@ -1,6 +1,8 @@
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.model.MyUser
+import hu.zsof.restaurantApp.model.convertToDto
+import hu.zsof.restaurantApp.model.extension.LoggedUserResponse
 import hu.zsof.restaurantApp.model.extension.LoginData
 import hu.zsof.restaurantApp.model.extension.Response
 import hu.zsof.restaurantApp.service.UserService
@@ -22,9 +24,9 @@ import javax.servlet.http.HttpServletResponse
 class AuthController @Autowired constructor(private val userService: UserService) {
 
     @PostMapping("/login")
-    fun login(@RequestBody loginData: LoginData, response: HttpServletResponse): ResponseEntity<Response> {
+    fun login(@RequestBody loginData: LoginData, response: HttpServletResponse): ResponseEntity<LoggedUserResponse> {
         if (loginData.email.isNullOrEmpty() || loginData.password.isNullOrEmpty()) {
-            return ResponseEntity(Response(isSuccess= false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
+            return ResponseEntity(LoggedUserResponse(isSuccess = false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
         }
         val getUser = userService.getUserByEmail(email = loginData.email)
         if (getUser.isPresent) {
@@ -33,11 +35,11 @@ class AuthController @Autowired constructor(private val userService: UserService
                 val token = AuthUtils.createToken(user.id, user.isAdmin)
                 val cookie = Cookie(AuthUtils.COOKIE_NAME, token)
                 response.addCookie(cookie)
-                return ResponseEntity(Response(isSuccess = true, successMessage= "Login is successful", error = ""), HttpStatus.OK)
+                return ResponseEntity(LoggedUserResponse(isSuccess = true, successMessage = "Login is successful", error = "", user.convertToDto()), HttpStatus.OK)
             }
-            return ResponseEntity(Response(false, "", "Email or password is wrong"), HttpStatus.UNAUTHORIZED)
+            return ResponseEntity(LoggedUserResponse(false, "", "Email or password is wrong"), HttpStatus.UNAUTHORIZED)
         } else {
-            return ResponseEntity(Response(false, "", "User not found"), HttpStatus.NOT_FOUND)
+            return ResponseEntity(LoggedUserResponse(false, "", "User not found"), HttpStatus.NOT_FOUND)
         }
     }
 

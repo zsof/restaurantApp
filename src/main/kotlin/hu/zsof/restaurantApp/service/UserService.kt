@@ -45,7 +45,7 @@ class UserService(private val userRepository: UserRepository, private val placeR
         return Optional.of(userRepository.save(updateUser).convertToDto())
     }
 
-    fun addFavPlace(userId: Long, placeId: Long): Optional<PlaceDto> {
+    fun addFavPlace(userId: Long, placeId: Long): Optional<UserDto> {
         val userOptional = userRepository.findById(userId)
         val placeOptional = placeRepository.findById(placeId)
 
@@ -65,8 +65,9 @@ class UserService(private val userRepository: UserRepository, private val placeR
             user.favPlaceIds.add(placeId)
             place.usersNumber = place.usersNumber + 1
         }
-        userRepository.save(user)
-        return Optional.of(placeRepository.save(place).convertToDto())
+        placeRepository.save(place)
+
+        return Optional.of(userRepository.save(user).convertToDto())
 
     }
 
