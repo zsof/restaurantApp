@@ -4,18 +4,17 @@ import javax.persistence.*
 
 @Embeddable
 class Filter(
+        var glutenFree: Boolean = false,
+        var lactoseFree: Boolean = false,
+        var vegetarian: Boolean = false,
+        var vegan: Boolean = false,
+        var fastFood: Boolean = false,
 
-        private var glutenFree: Boolean = false,
-        private var lactoseFree: Boolean = false,
-        private var vegetarian: Boolean = false,
-        private var vegan: Boolean = false,
-        private var fastFood: Boolean = false,
-
-        private var parkingAvailable: Boolean = false,
-        private var dogFriendly: Boolean = false,
-        private var familyPlace: Boolean = false,
-        private var delivery: Boolean = false,
-        private var creditCard: Boolean = false,
+        var parkingAvailable: Boolean = false,
+        var dogFriendly: Boolean = false,
+        var familyPlace: Boolean = false,
+        var delivery: Boolean = false,
+        var creditCard: Boolean = false,
 ) {
     fun convertToList(): FilterList {
         return FilterList(
@@ -36,7 +35,7 @@ class Filter(
 }
 
 class FilterList(
-        private val filters: MutableList<Boolean> = mutableListOf()
+        val filters: MutableList<Boolean> = mutableListOf()
 ) {
     fun compare(compareTo: FilterList): Boolean {
         if (this.filters.size == compareTo.filters.size) {
