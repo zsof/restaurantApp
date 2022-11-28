@@ -1,6 +1,7 @@
 package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.dto.PlaceDto
+import hu.zsof.restaurantApp.model.Filter
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceRepository
@@ -21,7 +22,11 @@ class PlaceService(private val placeRepository: PlaceRepository) {
         theNewPlace.phoneNumber = newPlace.phoneNumber
         theNewPlace.email = newPlace.email
         theNewPlace.web = newPlace.web
-        return placeRepository.save(newPlace).convertToDto()
+        theNewPlace.latitude = newPlace.latitude
+        theNewPlace.longitude = newPlace.longitude
+        theNewPlace.rate = 0.0f
+        theNewPlace.usersNumber = 0
+        return placeRepository.save(theNewPlace).convertToDto()
     }
 
     fun getAllPlace(): MutableList<Place> = placeRepository.findAll()
@@ -38,4 +43,9 @@ class PlaceService(private val placeRepository: PlaceRepository) {
     }
 
     fun deleteAll() = placeRepository.deleteAll()
+    fun filterPlaces(filterItems: Filter): MutableList<Place> {
+        return getAllPlace().filter { restaurantList ->
+            filterItems.convertToList().compare(restaurantList.filter.convertToList())
+        }.toMutableList()
+    }
 }
