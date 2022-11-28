@@ -1,6 +1,8 @@
 package hu.zsof.restaurantApp.controller
 
+import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.UserDto
+import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.service.UserService
@@ -13,64 +15,65 @@ import java.util.*
 @RestController
 @RequestMapping("/users")
 class UserController(private val userService: UserService) {
-    /**
-     * These functions are available just for admins
-     */
 
-    @GetMapping("/{id}")
-    fun getUserById(
-        @PathVariable id: Long,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<UserDto?> {
+    @PutMapping("profile")
+    fun updateProfile(
+            @RequestBody userUpdateProfileDto: UserUpdateProfileDto,
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+    ): ResponseEntity<UserDto> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        val user: Optional<MyUser> = userService.getUserById(id)
-        if (!user.isPresent) {
-            return ResponseEntity(null, HttpStatus.NOT_FOUND)
+
+        val updatedUser = userService.updateProfile(verification.userId, userUpdateProfileDto)
+        if (!updatedUser.isPresent) {
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
         }
-        return ResponseEntity(user.get().convertToDto(), HttpStatus.OK)
+        return ResponseEntity(updatedUser.get(), HttpStatus.OK)
     }
 
-    @GetMapping
-    fun getAllUser(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<UserDto>> {
+    @GetMapping("profile")
+    fun getUserProfile(
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+    ): ResponseEntity<UserDto> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        val users: MutableList<MyUser> = userService.getAllUser()
-        return ResponseEntity<List<UserDto>>(users.convertToDto(), HttpStatus.OK)
+        val getUser = userService.getUserById(verification.userId)
+        if (!getUser.isPresent) {
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+        return ResponseEntity(getUser.get().convertToDto(), HttpStatus.OK)
     }
 
-    @DeleteMapping("/{id}")
-    fun deleteById(
-        @PathVariable id: Long,
-        @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<HttpStatus> {
+    @PostMapping("fav-places/{placeId}")
+    fun addFavPlaceForUser(
+            @PathVariable placeId: Long,
+            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+    ): ResponseEntity<UserDto> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        return try {
-            userService.deleteUserById(id)
-            ResponseEntity(HttpStatus.OK)
-        } catch (e: Exception) {
-            ResponseEntity(HttpStatus.NOT_FOUND)
+
+        val modifiedUser = userService.addFavPlace(verification.userId, placeId)
+        if (!modifiedUser.isPresent) {
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
         }
+
+        return ResponseEntity<UserDto>(modifiedUser.get(), HttpStatus.OK)
     }
 
-    @DeleteMapping
-    fun deleteAll(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<HttpStatus> {
+    @GetMapping("fav-places")
+    fun getUserFavPlaces(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceDto>> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        return try {
-            userService.deleteAllUser()
-            ResponseEntity(HttpStatus.OK)
-        } catch (e: Exception) {
-            ResponseEntity(HttpStatus.NOT_FOUND)
-        }
+
+        val favPlaces = userService.getFavPlaces(verification.userId)
+        return ResponseEntity<List<PlaceDto>>(favPlaces.get(), HttpStatus.OK)
     }
 }

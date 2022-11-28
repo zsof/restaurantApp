@@ -16,9 +16,6 @@ import java.util.*
 @RequestMapping("/places")
 class PlaceController(private val placeService: PlaceService) {
 
-    /**
-     * Available for users and admins
-     */
     @GetMapping("/{id}")
     fun getPlaceById(
             @PathVariable id: Long,
@@ -35,9 +32,6 @@ class PlaceController(private val placeService: PlaceService) {
         return ResponseEntity(place.get().convertToDto(), HttpStatus.OK)
     }
 
-    /**
-     * Available for users and admins
-     */
     @GetMapping
     fun getAllPlace(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceDto>> {
         val verification = AuthUtils.verifyToken(token)
@@ -48,10 +42,7 @@ class PlaceController(private val placeService: PlaceService) {
         return ResponseEntity<List<PlaceDto>>(places.convertToDto(), HttpStatus.OK)
     }
 
-    /**
-     * Available just for admins
-     */
-    @GetMapping("/map")
+    @GetMapping("map")
     fun getAllPlacesInMap(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceMapDto>> {
         val verification = AuthUtils.verifyToken(token)
         if (!verification.verified) {
@@ -61,17 +52,16 @@ class PlaceController(private val placeService: PlaceService) {
         return ResponseEntity<List<PlaceMapDto>>(places.convertToPlaceMapDto(), HttpStatus.OK)
     }
 
-    @DeleteMapping("delete/{id}")
-    fun deleteById(
-            @PathVariable id: Long,
+    @PostMapping("new-place")
+    fun newPlace(
+            @RequestBody place: Place,
             @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<HttpStatus> {
+    ): ResponseEntity<PlaceDto> {
         val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
+        if (!verification.verified) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        return if (placeService.deletePlaceById(id)) {
-            ResponseEntity(HttpStatus.OK)
-        } else ResponseEntity(HttpStatus.NOT_FOUND)
+        val newPlace = placeService.newPlace(place)
+        return ResponseEntity(newPlace, HttpStatus.CREATED)
     }
 }
