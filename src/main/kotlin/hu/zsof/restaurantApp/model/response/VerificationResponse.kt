@@ -1,4 +1,4 @@
-package hu.zsof.restaurantApp.model.extension
+package hu.zsof.restaurantApp.model.response
 
 class VerificationResponse(
     val verified: Boolean = false,

@@ -1,4 +1,4 @@
-package hu.zsof.restaurantApp.model.extension
+package hu.zsof.restaurantApp.model.request
 
 class LoginData(
         val email: String = "",

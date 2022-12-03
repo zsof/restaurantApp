@@ -3,7 +3,7 @@ package hu.zsof.restaurantApp.util
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
-import hu.zsof.restaurantApp.model.extension.VerificationResponse
+import hu.zsof.restaurantApp.model.response.VerificationResponse
 import java.util.*
 
 object AuthUtils {

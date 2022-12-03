@@ -2,9 +2,9 @@ package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.convertToDto
-import hu.zsof.restaurantApp.model.extension.LoggedUserResponse
-import hu.zsof.restaurantApp.model.extension.LoginData
-import hu.zsof.restaurantApp.model.extension.Response
+import hu.zsof.restaurantApp.model.response.LoggedUserResponse
+import hu.zsof.restaurantApp.model.request.LoginData
+import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.service.UserService
 import hu.zsof.restaurantApp.util.AuthUtils
 import hu.zsof.restaurantApp.util.ValidationUtils
@@ -25,7 +25,7 @@ class AuthController @Autowired constructor(private val userService: UserService
 
     @PostMapping("/login")
     fun login(@RequestBody loginData: LoginData, response: HttpServletResponse): ResponseEntity<LoggedUserResponse> {
-        if (loginData.email.isNullOrEmpty() || loginData.password.isNullOrEmpty()) {
+        if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
             return ResponseEntity(LoggedUserResponse(isSuccess = false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
         }
         val getUser = userService.getUserByEmail(email = loginData.email)
@@ -45,7 +45,7 @@ class AuthController @Autowired constructor(private val userService: UserService
 
     @PostMapping("/register")
     fun register(@RequestBody loginData: LoginData): ResponseEntity<Response> {
-        if (loginData.email.isNullOrEmpty() || loginData.password.isNullOrEmpty()) {
+        if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
             return ResponseEntity(Response(false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
         }
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {

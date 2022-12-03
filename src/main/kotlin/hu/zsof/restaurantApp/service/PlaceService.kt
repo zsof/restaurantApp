@@ -1,5 +1,6 @@
 package hu.zsof.restaurantApp.service
 
+import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.model.Filter
 import hu.zsof.restaurantApp.model.Place
@@ -43,9 +44,13 @@ class PlaceService(private val placeRepository: PlaceRepository) {
     }
 
     fun deleteAll() = placeRepository.deleteAll()
-    fun filterPlaces(filterItems: Filter): MutableList<Place> {
-        return getAllPlace().filter { restaurantList ->
-            filterItems.convertToList().compare(restaurantList.filter.convertToList())
+    fun filterPlaces(filterItems: FilterDto): MutableList<Place> {
+        val getAllFilteredPlace = getAllPlace().filter { restaurantList ->
+            filterItems.filter.convertToList().compare(restaurantList.filter.convertToList())
+        }.toMutableList()
+
+        return getAllFilteredPlace.filter { restaurantList ->
+            filterItems.type == restaurantList.type
         }.toMutableList()
     }
 }

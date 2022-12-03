@@ -1,5 +1,6 @@
 package hu.zsof.restaurantApp.controller
 
+import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceMapDto
 import hu.zsof.restaurantApp.model.Filter
@@ -68,7 +69,7 @@ class PlaceController(private val placeService: PlaceService) {
 
     @PostMapping("filter")
     fun filterPlace(
-            @RequestBody filter: Filter,
+            @RequestBody filters: FilterDto,
             @CookieValue(AuthUtils.COOKIE_NAME) token: String?
     ): ResponseEntity<List<PlaceDto>> {
         val verification = AuthUtils.verifyToken(token)
@@ -76,7 +77,7 @@ class PlaceController(private val placeService: PlaceService) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
 
-        val filteredPlaces: MutableList<Place> = placeService.filterPlaces(filter)
+        val filteredPlaces: MutableList<Place> = placeService.filterPlaces(filters)
         return ResponseEntity(filteredPlaces.convertToDto(), HttpStatus.OK)
     }
 }
