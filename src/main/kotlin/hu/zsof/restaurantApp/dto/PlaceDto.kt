@@ -1,6 +1,7 @@
 package hu.zsof.restaurantApp.dto
 
 import hu.zsof.restaurantApp.model.Filter
+import hu.zsof.restaurantApp.model.OpenDetails
 import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
 
@@ -13,6 +14,7 @@ class PlaceDto(
         val image: String? = null,
         val type: Type = Type.RESTAURANT,
         val filter: Filter = Filter(),
+        val openDetails: OpenDetails = OpenDetails(),
         val phoneNumber: String? = "",
         var email: String? = "",
         var web: String? = "",

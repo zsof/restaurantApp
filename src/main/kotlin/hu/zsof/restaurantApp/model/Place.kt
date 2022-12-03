@@ -30,8 +30,9 @@ class Place(
         var type: Type = Type.RESTAURANT,
 
         @Embedded
-        var filter: Filter = Filter()
-
+        var filter: Filter = Filter(),
+        @Embedded
+        var openDetails: OpenDetails = OpenDetails()
 )
 
 fun Place.convertToDto(): PlaceDto {
@@ -44,6 +45,7 @@ fun Place.convertToDto(): PlaceDto {
             this.image,
             this.type,
             this.filter,
+            this.openDetails,
             this.phoneNumber,
             this.email,
             this.web,

@@ -25,6 +25,7 @@ class PlaceService(private val placeRepository: PlaceRepository) {
         theNewPlace.web = newPlace.web
         theNewPlace.latitude = newPlace.latitude
         theNewPlace.longitude = newPlace.longitude
+        theNewPlace.openDetails = newPlace.openDetails
         theNewPlace.rate = 0.0f
         theNewPlace.usersNumber = 0
         return placeRepository.save(theNewPlace).convertToDto()
