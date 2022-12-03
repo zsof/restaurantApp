@@ -31,7 +31,7 @@ class AuthController @Autowired constructor(private val userService: UserService
         val getUser = userService.getUserByEmail(email = loginData.email)
         if (getUser.isPresent) {
             val user = getUser.get()
-            if (user.password == loginData.password) {
+            if (AuthUtils.comparePassword(loginData.password, user.password)) {
                 val token = AuthUtils.createToken(user.id, user.isAdmin)
                 val cookie = Cookie(AuthUtils.COOKIE_NAME, token)
                 response.addCookie(cookie)
@@ -45,12 +45,12 @@ class AuthController @Autowired constructor(private val userService: UserService
 
     @PostMapping("/register")
     fun register(@RequestBody loginData: LoginData): ResponseEntity<Response> {
-        if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
-            return ResponseEntity(Response(false, "", "Email or password is empty"), HttpStatus.BAD_REQUEST)
+        if (loginData.email.isEmpty() || loginData.password.isEmpty() || loginData.name.isEmpty()) {
+            return ResponseEntity(Response(false, "", "Email, password or name is empty"), HttpStatus.BAD_REQUEST)
         }
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {
             try {
-                userService.createUser(MyUser(email = loginData.email, password = loginData.password, name = loginData.name, nickName = loginData.nickName))
+                userService.createUser(MyUser(email = loginData.email, password = AuthUtils.passwordEncoder.encode(loginData.password), name = loginData.name, nickName = loginData.nickName))
             } catch (e: DataIntegrityViolationException) {
                 return ResponseEntity(Response(false, "", "Email is already in use"), HttpStatus.BAD_REQUEST)
             }

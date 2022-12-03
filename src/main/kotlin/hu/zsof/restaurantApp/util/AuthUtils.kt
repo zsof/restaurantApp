@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import hu.zsof.restaurantApp.model.response.VerificationResponse
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
 
 object AuthUtils {
@@ -13,6 +14,8 @@ object AuthUtils {
     private val JWTVerifier = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build()
     private const val IS_ADMIN = "is_admin"
     const val COOKIE_NAME = "jwt_token"
+
+    val passwordEncoder = BCryptPasswordEncoder()
 
     fun createToken(id: Long, isAdmin: Boolean = false): String {
         val audience = id.toString()
@@ -40,5 +43,9 @@ object AuthUtils {
             // Invalid signature/claims
             VerificationResponse(verified = false, errorMessage = e.localizedMessage)
         }
+    }
+
+    fun comparePassword(password: String, encodedPassword: String): Boolean{
+        return BCryptPasswordEncoder().matches(password, encodedPassword)
     }
 }

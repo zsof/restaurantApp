@@ -1,11 +1,10 @@
 package hu.zsof.restaurantApp
 
-import hu.zsof.restaurantApp.service.PlaceService
-import org.hibernate.service.spi.InjectService
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.runApplication
 
-@SpringBootApplication
+@SpringBootApplication(exclude = [SecurityAutoConfiguration::class])
 class RestaurantAppApplication
 
 fun main(args: Array<String>) {
