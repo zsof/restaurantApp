@@ -16,7 +16,7 @@ class Place(
 
         var name: String = "",
 
-        var address: String? = null,
+        var address: String = "",
         var rate: Float? = 2.0f,
         var price: Price = Price.LOW,
         var image: String? = null,
