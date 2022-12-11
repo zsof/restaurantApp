@@ -2,7 +2,6 @@ package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.dto.PlaceDto
-import hu.zsof.restaurantApp.model.Filter
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceRepository
@@ -18,7 +17,7 @@ class PlaceService(private val placeRepository: PlaceRepository) {
         theNewPlace.address = newPlace.address
         theNewPlace.type = newPlace.type
         theNewPlace.price = newPlace.price
-        theNewPlace.image = newPlace.image
+        theNewPlace.image = newPlace.image //??
         theNewPlace.filter = newPlace.filter
         theNewPlace.phoneNumber = newPlace.phoneNumber
         theNewPlace.email = newPlace.email
