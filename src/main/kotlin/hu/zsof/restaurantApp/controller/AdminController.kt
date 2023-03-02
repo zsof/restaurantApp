@@ -18,7 +18,6 @@ class AdminController(private val placeService: PlaceService, private val userSe
     /**
      * User controller functions
      */
-
     @GetMapping("users/{id}")
     fun getUserById(
             @PathVariable id: Long,
@@ -74,24 +73,5 @@ class AdminController(private val placeService: PlaceService, private val userSe
         } catch (e: Exception) {
             ResponseEntity(HttpStatus.NOT_FOUND)
         }
-    }
-
-    /**
-     * Place controller functions
-     */
-
-    @DeleteMapping("places/{id}")
-    fun deletePlaceById(
-            @PathVariable id: Long,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<HttpStatus> {
-        val verification = AuthUtils.verifyToken(token)
-        // todo majd visszatenni ide az admin jogosultságát
-        if (!verification.verified /*|| !verification.isAdmin*/) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-        return if (placeService.deletePlaceById(id)) {
-            ResponseEntity(HttpStatus.OK)
-        } else ResponseEntity(HttpStatus.NOT_FOUND)
     }
 }

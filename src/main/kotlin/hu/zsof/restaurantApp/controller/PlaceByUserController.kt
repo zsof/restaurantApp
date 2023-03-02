@@ -4,26 +4,21 @@ import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceMapDto
 import hu.zsof.restaurantApp.model.*
-import hu.zsof.restaurantApp.model.enum.Price
-import hu.zsof.restaurantApp.model.enum.Type
-import hu.zsof.restaurantApp.model.response.Response
+import hu.zsof.restaurantApp.service.PlaceInReviewService
 import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.util.AuthUtils
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.*
 
 @RestController
 @RequestMapping("/places")
-class PlaceController(private val placeService: PlaceService) {
+class PlaceByUserController(private val placeService: PlaceService) {
+
+    /**
+     * Methods that all user can use
+     */
 
     @GetMapping("/{id}")
     fun getPlaceById(
@@ -59,21 +54,6 @@ class PlaceController(private val placeService: PlaceService) {
         }
         val places: MutableList<Place> = placeService.getAllPlace()
         return ResponseEntity<List<PlaceMapDto>>(places.convertToPlaceMapDto(), HttpStatus.OK)
-    }
-
-    @PostMapping("new-place")
-    fun newPlace(
-            @RequestBody place: Place,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<PlaceDto> { //PlaceDto
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
-        val newPlace = placeService.newPlace(place)
-
-        return ResponseEntity(newPlace, HttpStatus.CREATED)
     }
 
     @PostMapping("filter")

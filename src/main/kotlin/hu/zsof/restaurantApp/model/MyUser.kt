@@ -1,6 +1,7 @@
 package hu.zsof.restaurantApp.model
 
 import hu.zsof.restaurantApp.dto.UserDto
+import hu.zsof.restaurantApp.model.enum.UserType
 import javax.persistence.*
 
 @Entity
@@ -16,7 +17,13 @@ class MyUser(
         var email: String = "",
         var password: String = "",
         var image: String? = null,
-        var isAdmin: Boolean = false,
+        var userType: UserType = UserType.USER,
+
+        //Ha törlődnek a place-k, a usernek meg kell maradnia -->PERSIST
+        //Ha törlődne a user és akarom h törlődjenek a place-ei -->REMOVE
+        //Place táblában a "user"-hez van kapcsolva
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.PERSIST])
+        var places: MutableList<Place> = mutableListOf(),
 
         @ElementCollection
         var favPlaceIds: MutableList<Long> = mutableListOf()
@@ -29,7 +36,7 @@ fun MyUser.convertToDto(): UserDto {
             this.nickName,
             this.email,
             this.image,
-            this.isAdmin,
+            this.userType,
             this.favPlaceIds
     )
 }

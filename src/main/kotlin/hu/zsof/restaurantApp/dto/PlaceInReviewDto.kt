@@ -6,10 +6,10 @@ import hu.zsof.restaurantApp.model.OpenDetails
 import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
 
-class PlaceDto(
+class PlaceInReviewDto(
         val id: Long = 0,
         val name: String = "",
-        val address: String = "",
+        val address: String? = "",
         val rate: Float? = 2.0f,
         val price: Price = Price.LOW,
         val image: String? = null,
@@ -20,6 +20,8 @@ class PlaceDto(
         var email: String? = "",
         var web: String? = "",
         var usersNumber: Int = 0,
+        var problem: String? = "",
         var creatorName: String = "",
         var creatorId: Long = 0
+
 )

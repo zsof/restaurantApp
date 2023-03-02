@@ -29,6 +29,10 @@ class Place(
 
         var type: Type = Type.RESTAURANT,
 
+        // Sok place-je lehet egy usernek -> MyUser táblában meg @OneToMany kell
+        @ManyToOne
+        var user: MyUser = MyUser(),
+
         @Embedded
         var filter: Filter = Filter(),
         @Embedded
@@ -37,19 +41,21 @@ class Place(
 
 fun Place.convertToDto(): PlaceDto {
     return PlaceDto(
-            this.id,
-            this.name,
-            this.address,
-            this.rate,
-            this.price,
-            this.image,
-            this.type,
-            this.filter,
-            this.openDetails,
-            this.phoneNumber,
-            this.email,
-            this.web,
-            this.usersNumber
+            id = this.id,
+            name = this.name,
+            address = this.address,
+            rate = this.rate,
+            price = this.price,
+            image = this.image,
+            type = this.type,
+            filter = this.filter,
+            openDetails = this.openDetails,
+            phoneNumber = this.phoneNumber,
+            email = this.email,
+            web = this.web,
+            usersNumber = this.usersNumber,
+            creatorName = this.user.name,
+            creatorId = this.user.id
     )
 }
 

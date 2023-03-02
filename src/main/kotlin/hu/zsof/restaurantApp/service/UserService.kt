@@ -6,6 +6,7 @@ import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
+import hu.zsof.restaurantApp.model.enum.UserType
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -16,7 +17,7 @@ import java.util.*
 @Transactional
 class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
     fun createUser(newUser: MyUser): MyUser {
-        newUser.isAdmin = false
+        newUser.userType = UserType.USER
         return userRepository.save(newUser)
     }
 

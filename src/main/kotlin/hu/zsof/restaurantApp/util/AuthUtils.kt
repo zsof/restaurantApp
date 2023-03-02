@@ -9,7 +9,7 @@ import java.util.*
 
 object AuthUtils {
 
-    private const val SECRET_KEY = "ResTaUr4nt4pP" //ide kell vmi
+    private const val SECRET_KEY = "ResTaUr4nt4pP"
     private const val JWT_TOKEN_VALIDATE_TIME = 1 * 60 * 60 * 1000 // 1 hour
     private val JWTVerifier = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build()
     private const val IS_ADMIN = "is_admin"
