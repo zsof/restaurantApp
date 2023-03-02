@@ -1,3 +1,4 @@
+/*
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.model.MyUser
@@ -60,3 +61,4 @@ class AuthController @Autowired constructor(private val userService: UserService
         }
     }
 }
+*/

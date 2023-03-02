@@ -8,10 +8,12 @@ import hu.zsof.restaurantApp.service.UserService
 import hu.zsof.restaurantApp.util.AuthUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/admin")
 class AdminController(private val placeService: PlaceService, private val userService: UserService) {
 

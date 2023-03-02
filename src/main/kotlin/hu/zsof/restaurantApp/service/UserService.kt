@@ -17,7 +17,7 @@ import java.util.*
 @Transactional
 class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
     fun createUser(newUser: MyUser): MyUser {
-        newUser.userType = UserType.USER
+        newUser.userType = UserType.USER  ///??
         return userRepository.save(newUser)
     }
 
