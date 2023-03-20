@@ -31,7 +31,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-	implementation("com.auth0:java-jwt:4.2.1")
+    implementation("com.auth0:java-jwt:4.2.1")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

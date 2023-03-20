@@ -29,27 +29,17 @@ class SecurityController(private val userService: UserService, private val secur
         val verification = securityService.verifyToken(token)
 
         val user = userService.getUserById(verification.userId)
-        return if (user.isPresent) {
-            ResponseEntity(LoggedUserResponse(true, "", "", user.get().convertToDto()), HttpStatus.OK)
-        } else {
-            throw MyException("User not found", HttpStatus.UNAUTHORIZED)
-        }
+        return ResponseEntity(LoggedUserResponse(true, "", "", user.convertToDto()), HttpStatus.OK)
+
     }
 
     @PostMapping("/login")
     fun login(authentication: Authentication, response: HttpServletResponse): ResponseEntity<LoggedUserResponse> {
         val user = userService.getUserByEmail(email = authentication.name)
 
-        return if (user.isPresent) {
-            val userPresent = user.get()
-            val token = securityService.generateToken(user = userPresent)
-            response.addHeader(TOKEN_NAME, "Bearer $token")
-            ResponseEntity(LoggedUserResponse(true, "", "Login Successful", userPresent.convertToDto()), HttpStatus.OK)
-
-        } else {
-            throw MyException("User not found", HttpStatus.NOT_FOUND)
-        }
-
+        val token = securityService.generateToken(user = user)
+        response.addHeader(TOKEN_NAME, "Bearer $token")
+        return ResponseEntity(LoggedUserResponse(true, "", "Login Successful", user.convertToDto()), HttpStatus.OK)
     }
 
     @PostMapping("/register")

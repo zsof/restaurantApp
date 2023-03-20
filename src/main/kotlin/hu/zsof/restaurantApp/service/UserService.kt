@@ -3,37 +3,58 @@ package hu.zsof.restaurantApp.service
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
+import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
-import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.model.enum.UserType
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 @Transactional
 class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
     fun createUser(newUser: MyUser): MyUser {
-        newUser.userType = UserType.USER  ///??
+        newUser.userType = UserType.USER
         return userRepository.save(newUser)
     }
 
     fun getAllUser(): MutableList<MyUser> = userRepository.findAll()
 
-    fun getUserById(id: Long): Optional<MyUser> = userRepository.findById(id)
-    fun getUserByEmail(email: String) = userRepository.findUserByEmail(email)
+    fun getUserById(id: Long): MyUser {
+        val user = userRepository.findById(id)
+        if (user.isPresent) {
+            return user.get()
+        } else {
+            throw MyException("User not found", HttpStatus.NOT_FOUND)
+        }
+    }
 
-    fun deleteUserById(id: Long) = userRepository.deleteById(id)
+    fun getUserByEmail(email: String): MyUser {
+        val user = userRepository.findUserByEmail(email)
+        if (user.isPresent) {
+            return user.get()
+        } else {
+            throw MyException("User not found", HttpStatus.NOT_FOUND)
+        }
 
-    fun deleteAllUser() = userRepository.deleteAll()
+    }
 
-    fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): Optional<UserDto> {
+    fun deleteUserById(id: Long) {
+
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id)
+        } else {
+            throw MyException("User not found", HttpStatus.NOT_FOUND)
+        }
+    }
+
+    fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): UserDto {
         val userOptional = userRepository.findById(userId)
         if (!userOptional.isPresent) {
-            return Optional.empty()
+            throw MyException("User not found", HttpStatus.NOT_FOUND)
         }
         val updateUser = userOptional.get()
         updateUser.password = userUpdateProfileDto.password ?: updateUser.password
@@ -43,15 +64,15 @@ class UserService(private val userRepository: UserRepository, private val placeR
         updateUser.email = userUpdateProfileDto.email ?: updateUser.email
 
         //updateUser.isAdmin = false
-        return Optional.of(userRepository.save(updateUser).convertToDto())
+        return userRepository.save(updateUser).convertToDto()
     }
 
-    fun addFavPlace(userId: Long, placeId: Long): Optional<UserDto> {
+    fun addFavPlace(userId: Long, placeId: Long): UserDto {
         val userOptional = userRepository.findById(userId)
         val placeOptional = placeRepository.findById(placeId)
 
         if (!userOptional.isPresent && !placeOptional.isPresent) {
-            return Optional.empty()
+            throw MyException("User or Place not found", HttpStatus.NOT_FOUND)
         }
 
         val user = userOptional.get()
@@ -68,20 +89,21 @@ class UserService(private val userRepository: UserRepository, private val placeR
         }
         placeRepository.save(place)
 
-        return Optional.of(userRepository.save(user).convertToDto())
+        return userRepository.save(user).convertToDto()
 
     }
 
-    fun getFavPlaces(userId: Long): Optional<List<PlaceDto>> {
+    fun getFavPlaces(userId: Long): List<PlaceDto> {
         val userOptional = userRepository.findById(userId)
 
         if (!userOptional.isPresent) {
-            return Optional.empty()
+            throw MyException("User not found", HttpStatus.NOT_FOUND)
         }
 
         val userFavPlaceIds = userOptional.get().favPlaceIds
-        val places: MutableList<PlaceDto> = placeRepository.findAllById(userFavPlaceIds).convertToDto()
 
-        return Optional.of(places)
+        return placeRepository.findAllById(userFavPlaceIds).convertToDto()
     }
 }
+
+

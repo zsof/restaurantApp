@@ -1,7 +1,11 @@
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
+import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.*
+import hu.zsof.restaurantApp.model.response.Response
+import hu.zsof.restaurantApp.security.SecurityService
+import hu.zsof.restaurantApp.security.SecurityService.Companion.TOKEN_NAME
 import hu.zsof.restaurantApp.service.PlaceInReviewService
 import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.util.AuthUtils
@@ -14,7 +18,7 @@ import java.util.*
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER')")
 @RequestMapping("/places-owner")
-class PlaceByOwnerController(private val placeService: PlaceService, private val placeInReviewService: PlaceInReviewService) {
+class PlaceByOwnerController(private val placeService: PlaceService, private val placeInReviewService: PlaceInReviewService, private val securityService: SecurityService) {
 
     /**
      * Methods that only owner and admin can use
@@ -24,50 +28,29 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
     @PostMapping("new-place")
     fun newPlace(
             @RequestBody placeInReview: PlaceInReview,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
     ): ResponseEntity<PlaceInReviewDto> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
         val newPlaceInReview = placeInReviewService.newPlace(placeInReview)
-
-        return ResponseEntity(newPlaceInReview, HttpStatus.CREATED)
+        return ResponseEntity(newPlaceInReview.convertToDto(), HttpStatus.CREATED)
     }
 
     // Delete own place from Place table
     @DeleteMapping("places/{id}")
     fun deletePlaceById(
             @PathVariable id: Long,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<HttpStatus> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
-        return if (placeService.deletePlaceByIdByUser(id, verification.userId)) {
-            ResponseEntity(HttpStatus.OK)
-        } else ResponseEntity(HttpStatus.NOT_FOUND)
+            @CookieValue(TOKEN_NAME) token: String
+    ): ResponseEntity<Response> {
+        val verification = securityService.verifyToken(token)
+        placeService.deletePlaceByIdByUser(id, verification.userId)
+        return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
-    //Update place
-    @PostMapping  //???
-    fun updatePlace(
+    //Update place -TODO
+   /* @PostMapping("update")
+    fun updatePlace(  //??
             @RequestBody place: Place,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @CookieValue(TOKEN_NAME) token: String
     ): ResponseEntity<PlaceInReviewDto> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
-        val updatedPlaceInReview = placeService.updatePlace(place)
-        if (!updatedPlaceInReview.isPresent) {
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
-        }
-        return ResponseEntity(updatedPlaceInReview.get(), HttpStatus.OK)
-    }
-
+        val verification = securityService.verifyToken(token)
+        return ResponseEntity(placeService.updatePlace(place, verification.userId), HttpStatus.OK)
+    }*/
 }

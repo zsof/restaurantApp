@@ -3,9 +3,9 @@ package hu.zsof.restaurantApp.controller
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.model.*
+import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.service.PlaceInReviewService
 import hu.zsof.restaurantApp.service.PlaceService
-import hu.zsof.restaurantApp.util.AuthUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -24,27 +24,14 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
     // Get place from PlaceInReview table
     @GetMapping("/{id}")
     fun getPlaceById(
-            @PathVariable id: Long,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @PathVariable id: Long
     ): ResponseEntity<PlaceInReviewDto?> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-        val placeInReview: Optional<PlaceInReview> = placeInReviewService.getPlaceById(id)
-        if (!placeInReview.isPresent) {
-            return ResponseEntity(null, HttpStatus.BAD_REQUEST)
-        }
-        return ResponseEntity(placeInReview.get().convertToDto(), HttpStatus.OK)
+        return ResponseEntity(placeInReviewService.getPlaceById(id).convertToDto(), HttpStatus.OK)
     }
 
     // Get all places from PlaceInReview table
     @GetMapping
-    fun getAllPlace(@CookieValue(AuthUtils.COOKIE_NAME) token: String?): ResponseEntity<List<PlaceInReviewDto>> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
+    fun getAllPlace(): ResponseEntity<List<PlaceInReviewDto>> {
         val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlace()
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
     }
@@ -53,75 +40,26 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
     @DeleteMapping("places/{id}")
     fun deletePlaceById(
             @PathVariable id: Long,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<HttpStatus> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
-        return if (placeService.deletePlaceById(id)) {
-            ResponseEntity(HttpStatus.OK)
-        } else ResponseEntity(HttpStatus.NOT_FOUND)
+    ): ResponseEntity<Response> {
+        placeService.deletePlaceById(id)
+        return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
-    // Delete all places from Place table
-    @DeleteMapping("places")
-    fun deleteAllPlace(
-            @PathVariable id: Long,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
-    ): ResponseEntity<HttpStatus> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-        return try {
-            placeService.deleteAll()
-            ResponseEntity(HttpStatus.OK)
-        } catch (e: Exception) {
-            ResponseEntity(HttpStatus.NOT_FOUND)
-        }
-    }
-
-    @PostMapping("accept")
+    @PostMapping("accept/{placeId}")
     fun acceptPlace(
-            @RequestBody place: Place,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @PathVariable placeId: Long,
     ): ResponseEntity<PlaceDto> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
-        //Add to Place table
-        val newPlace = placeService.newPlace(place)
-
-        //Delete from PlaceInReview table
-        if (placeInReviewService.deletePlaceById(place.id)) {
-            ResponseEntity(null, HttpStatus.OK)
-            //TODO így is jön vissza responsenetity, hogy nincs előtte a return?
-        } else ResponseEntity(HttpStatus.NOT_FOUND)
-
-        return ResponseEntity(newPlace, HttpStatus.CREATED)
+        return ResponseEntity(placeInReviewService.acceptPlace(placeId), HttpStatus.CREATED)
     }
 
 
     //Send report back if there is any problem
-    @PostMapping
+    @PostMapping("report/{placeId}")
     fun reportProblemPlace(
-            @RequestBody placeInReviewDto: PlaceInReviewDto,
-            @CookieValue(AuthUtils.COOKIE_NAME) token: String?
+            @RequestBody problem: String,
+            @PathVariable placeId: Long,
     ): ResponseEntity<PlaceInReviewDto> {
-        val verification = AuthUtils.verifyToken(token)
-        if (!verification.verified || !verification.isAdmin) {
-            return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        }
-
-        val updatedPlaceInReview = placeInReviewService.updatePlaceWithProblem(placeInReviewDto)
-        if (!updatedPlaceInReview.isPresent) {
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
-        }
-        return ResponseEntity(updatedPlaceInReview.get(), HttpStatus.OK)
+        return ResponseEntity(placeInReviewService.addProblemToReview(placeId, problem), HttpStatus.OK)
     }
 }
 

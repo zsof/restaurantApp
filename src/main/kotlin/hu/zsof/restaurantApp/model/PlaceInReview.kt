@@ -39,11 +39,9 @@ class PlaceInReview(
         var filter: Filter = Filter(),
         @Embedded
         var openDetails: OpenDetails = OpenDetails()
-)
-
-fun PlaceInReview.convertToDto(): PlaceInReviewDto {
-        return PlaceInReviewDto(
-                id = this.id,
+) {
+    fun convertToPlace(): Place {
+        return Place(
                 name = this.name,
                 address = this.address,
                 rate = this.rate,
@@ -56,16 +54,38 @@ fun PlaceInReview.convertToDto(): PlaceInReviewDto {
                 email = this.email,
                 web = this.web,
                 usersNumber = this.usersNumber,
-                problem = this.problem,
-                creatorName = this.user.name,
-                creatorId = this.user.id
+                latitude = this.latitude,
+                longitude = this.longitude,
+                user = MyUser(id = this.user.id)
         )
+    }
+}
+//todo itt minden van convertálva?
+fun PlaceInReview.convertToDto(): PlaceInReviewDto {
+    return PlaceInReviewDto(
+            id = this.id,
+            name = this.name,
+            address = this.address,
+            rate = this.rate,
+            price = this.price,
+            image = this.image,
+            type = this.type,
+            filter = this.filter,
+            openDetails = this.openDetails,
+            phoneNumber = this.phoneNumber,
+            email = this.email,
+            web = this.web,
+            usersNumber = this.usersNumber,
+            problem = this.problem,
+            creatorName = this.user.name,
+            creatorId = this.user.id
+    )
 }
 
 fun MutableList<PlaceInReview>.convertToDto(): MutableList<PlaceInReviewDto> {
-        val placeDtos = mutableListOf<PlaceInReviewDto>()
-        this.forEach {
-                placeDtos.add(it.convertToDto())
-        }
-        return placeDtos
+    val placeDtos = mutableListOf<PlaceInReviewDto>()
+    this.forEach {
+        placeDtos.add(it.convertToDto())
+    }
+    return placeDtos
 }
