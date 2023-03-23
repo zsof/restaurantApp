@@ -37,7 +37,7 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
     @DeleteMapping("places/{id}")
     fun deletePlaceById(
             @PathVariable id: Long,
-            @CookieValue(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String
     ): ResponseEntity<Response> {
         val verification = securityService.verifyToken(token)
         placeService.deletePlaceByIdByUser(id, verification.userId)
@@ -48,7 +48,7 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
    /* @PostMapping("update")
     fun updatePlace(  //??
             @RequestBody place: Place,
-            @CookieValue(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String
     ): ResponseEntity<PlaceInReviewDto> {
         val verification = securityService.verifyToken(token)
         return ResponseEntity(placeService.updatePlace(place, verification.userId), HttpStatus.OK)

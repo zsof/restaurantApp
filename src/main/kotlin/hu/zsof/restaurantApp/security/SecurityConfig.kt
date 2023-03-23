@@ -39,12 +39,13 @@ class SecurityConfig2(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
 
         return http
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
-                //.antMatchers("/v2/api-docs").permitAll()
-                //.antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/v2/api-docs").permitAll() // for swagger
+                .antMatchers("/swagger-resources/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer { httpSecurityOAuth2ResourceServerConfigurer: OAuth2ResourceServerConfigurer<HttpSecurity?> ->

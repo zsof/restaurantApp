@@ -24,15 +24,15 @@ class UserController(private val userService: UserService, private val securityS
     @PutMapping("profile")
     fun updateProfile(
             @RequestBody userUpdateProfileDto: UserUpdateProfileDto,
-            @CookieValue(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String
     ): ResponseEntity<UserDto> {
         val verification = securityService.verifyToken(token)
-        return ResponseEntity(userService.updateProfile(verification.userId, userUpdateProfileDto), HttpStatus.OK)
+        return ResponseEntity(userService.updateProfile(verification.userId, userUpdateProfileDto).convertToDto(), HttpStatus.OK)
     }
 
     @GetMapping("profile")
     fun getUserProfile(
-            @CookieValue(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String
     ): ResponseEntity<UserDto> {
         val verification = securityService.verifyToken(token)
         return ResponseEntity(userService.getUserById(verification.userId).convertToDto(), HttpStatus.OK)
@@ -41,15 +41,15 @@ class UserController(private val userService: UserService, private val securityS
     @PostMapping("fav-places/{placeId}")
     fun addFavPlaceForUser( //??
             @PathVariable placeId: Long,
-            @CookieValue(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String
     ): ResponseEntity<UserDto> {
         val verification = securityService.verifyToken(token)
-        return ResponseEntity<UserDto>(userService.addFavPlace(verification.userId, placeId), HttpStatus.OK)
+        return ResponseEntity<UserDto>(userService.addFavPlace(verification.userId, placeId).convertToDto(), HttpStatus.OK)
     }
 
     @GetMapping("fav-places")
-    fun getUserFavPlaces(@CookieValue(TOKEN_NAME) token: String): ResponseEntity<List<PlaceDto>> {
+    fun getUserFavPlaces(@RequestHeader(TOKEN_NAME) token: String): ResponseEntity<List<PlaceDto>> {
         val verification = securityService.verifyToken(token)
-        return ResponseEntity<List<PlaceDto>>(userService.getFavPlaces(verification.userId), HttpStatus.OK)
+        return ResponseEntity<List<PlaceDto>>(userService.getFavPlaces(verification.userId).convertToDto(), HttpStatus.OK)
     }
 }

@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp.model
 
 import hu.zsof.restaurantApp.dto.UserDto
-import hu.zsof.restaurantApp.model.enum.UserType
+import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
 import javax.persistence.*
 
 @Entity
@@ -17,7 +17,7 @@ class MyUser(
         var email: String = "",
         var password: String = "",
         var image: String? = null,
-        var userType: UserType = UserType.USER,
+        var userType: String = ROLE_USER,
 
         //Ha törlődnek a place-k, a usernek meg kell maradnia -->PERSIST
         //Ha törlődne a user és akarom h törlődjenek a place-ei -->REMOVE

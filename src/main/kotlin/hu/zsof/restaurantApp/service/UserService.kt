@@ -5,10 +5,15 @@ import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
+import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.convertToDto
-import hu.zsof.restaurantApp.model.enum.UserType
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
+import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
+import hu.zsof.restaurantApp.util.AuthUtils
+import hu.zsof.restaurantApp.util.ValidationUtils
+import org.hibernate.exception.ConstraintViolationException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
     fun createUser(newUser: MyUser): MyUser {
-        newUser.userType = UserType.USER
+        newUser.userType = ROLE_USER
         return userRepository.save(newUser)
     }
 
@@ -51,23 +56,40 @@ class UserService(private val userRepository: UserRepository, private val placeR
         }
     }
 
-    fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): UserDto {
+    fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): MyUser {
         val userOptional = userRepository.findById(userId)
         if (!userOptional.isPresent) {
             throw MyException("User not found", HttpStatus.NOT_FOUND)
         }
         val updateUser = userOptional.get()
-        updateUser.password = userUpdateProfileDto.password ?: updateUser.password
+
+
+
+        if (!userUpdateProfileDto.email.isNullOrEmpty()) {
+            if (ValidationUtils.checkEmailValidation(userUpdateProfileDto.email)) {
+                updateUser.email = userUpdateProfileDto.email
+            } else {
+                throw MyException("Email address format is not correct", HttpStatus.BAD_REQUEST)
+            }
+        }
+
+        if (!userUpdateProfileDto.password.isNullOrEmpty()) {
+            if (ValidationUtils.checkPasswordValidation(userUpdateProfileDto.password)) {
+                updateUser.password = userUpdateProfileDto.password
+            }else {
+                throw MyException("Password format is not correct", HttpStatus.BAD_REQUEST)
+            }
+        }
+
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.nickName = userUpdateProfileDto.nickName ?: updateUser.nickName
-        updateUser.email = userUpdateProfileDto.email ?: updateUser.email
 
         //updateUser.isAdmin = false
-        return userRepository.save(updateUser).convertToDto()
+        return userRepository.save(updateUser)
     }
 
-    fun addFavPlace(userId: Long, placeId: Long): UserDto {
+    fun addFavPlace(userId: Long, placeId: Long): MyUser {
         val userOptional = userRepository.findById(userId)
         val placeOptional = placeRepository.findById(placeId)
 
@@ -89,11 +111,11 @@ class UserService(private val userRepository: UserRepository, private val placeR
         }
         placeRepository.save(place)
 
-        return userRepository.save(user).convertToDto()
+        return userRepository.save(user)
 
     }
 
-    fun getFavPlaces(userId: Long): List<PlaceDto> {
+    fun getFavPlaces(userId: Long): MutableList<Place> {
         val userOptional = userRepository.findById(userId)
 
         if (!userOptional.isPresent) {
@@ -102,8 +124,6 @@ class UserService(private val userRepository: UserRepository, private val placeR
 
         val userFavPlaceIds = userOptional.get().favPlaceIds
 
-        return placeRepository.findAllById(userFavPlaceIds).convertToDto()
+        return placeRepository.findAllById(userFavPlaceIds)
     }
 }
-
-
