@@ -41,7 +41,7 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
     fun deletePlaceById(
             @PathVariable id: Long,
     ): ResponseEntity<Response> {
-        placeService.deletePlaceById(id)
+        placeInReviewService.deletePlaceById(id)
         return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
@@ -49,7 +49,7 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
     fun acceptPlace(
             @PathVariable placeId: Long,
     ): ResponseEntity<PlaceDto> {
-        return ResponseEntity(placeInReviewService.acceptPlace(placeId), HttpStatus.CREATED)
+        return ResponseEntity(placeInReviewService.acceptPlace(placeId).convertToDto(), HttpStatus.CREATED)
     }
 
 
@@ -59,7 +59,6 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
             @RequestBody problem: String,
             @PathVariable placeId: Long,
     ): ResponseEntity<PlaceInReviewDto> {
-        return ResponseEntity(placeInReviewService.addProblemToReview(placeId, problem), HttpStatus.OK)
+        return ResponseEntity(placeInReviewService.addProblemToReview(placeId, problem).convertToDto(), HttpStatus.OK)
     }
 }
-

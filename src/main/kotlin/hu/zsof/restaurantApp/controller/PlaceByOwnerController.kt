@@ -1,14 +1,12 @@
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
-import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.*
 import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.security.SecurityService
 import hu.zsof.restaurantApp.security.SecurityService.Companion.TOKEN_NAME
 import hu.zsof.restaurantApp.service.PlaceInReviewService
 import hu.zsof.restaurantApp.service.PlaceService
-import hu.zsof.restaurantApp.util.AuthUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -28,8 +26,10 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
     @PostMapping("new-place")
     fun newPlace(
             @RequestBody placeInReview: PlaceInReview,
+            @RequestHeader(TOKEN_NAME) token: String
     ): ResponseEntity<PlaceInReviewDto> {
-        val newPlaceInReview = placeInReviewService.newPlace(placeInReview)
+        val verification = securityService.verifyToken(token)
+        val newPlaceInReview = placeInReviewService.savePlaceInReview(placeInReview, verification.userId)
         return ResponseEntity(newPlaceInReview.convertToDto(), HttpStatus.CREATED)
     }
 

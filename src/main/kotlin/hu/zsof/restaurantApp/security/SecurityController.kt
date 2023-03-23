@@ -42,8 +42,9 @@ class SecurityController(private val userService: UserService, private val secur
         return ResponseEntity(LoggedUserResponse(true, "", "Login Successful", user.convertToDto()), HttpStatus.OK)
     }
 
+    //TODO majd kiszedni az isADmin részt
     @PostMapping("/register")
-    fun register(@RequestBody loginData: LoginData): ResponseEntity<Response> {
+    fun register(@RequestBody loginData: LoginData, @RequestHeader isAdmin: Boolean?): ResponseEntity<Response> {
         if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
             throw MyException("Email or password is empty", HttpStatus.BAD_REQUEST)
         }
@@ -52,7 +53,8 @@ class SecurityController(private val userService: UserService, private val secur
                 userService.createUser(
                         MyUser(
                                 email = loginData.email, password = AuthUtils.passwordEncoder.encode(loginData.password), name = loginData.name, nickName = loginData.nickName
-                        )
+                        ),
+                        isAdmin ?: false
                 )
             } catch (e: DataIntegrityViolationException) {
                 throw MyException("Email is already in use", HttpStatus.BAD_REQUEST)

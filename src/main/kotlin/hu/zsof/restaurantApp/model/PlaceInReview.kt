@@ -33,7 +33,7 @@ class PlaceInReview(
         @ManyToOne
         var user: MyUser = MyUser(),
 
-        var problem: String? = "",
+        var problem: String? = null,
 
         @Embedded
         var filter: Filter = Filter(),

@@ -1,10 +1,8 @@
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.exception.MyException
-import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
-import hu.zsof.restaurantApp.util.AuthUtils
 import hu.zsof.restaurantApp.util.Constants
 import net.bytebuddy.utility.RandomString
 import org.springframework.core.io.UrlResource
@@ -23,15 +21,15 @@ import java.nio.file.Paths
 @RestController
 @RequestMapping("/images")
 class ResourceController(private val placeRepository: PlaceRepository, private val userRepository: UserRepository) {
-    @PostMapping() //?? // TODO
-    fun newPlace(
+    @PostMapping()
+    fun newPlaceOrUserImage(
             @RequestParam("image") file: MultipartFile,
             // PlaceId or UserId
-            @RequestParam("typeId") typeId: String,
+            @RequestParam("itemId") itemId: String,
             // place or user
             @RequestParam("type") type: String,
     ): ResponseEntity<*> {
-        val typeIdLong = typeId.trim().replace("\"", "").toLongOrNull()
+        val typeIdLong = itemId.trim().replace("\"", "").toLongOrNull()
         val trimmedType = type.trim().replace("\"", "")
 
         if (typeIdLong == null) {
@@ -100,7 +98,7 @@ class ResourceController(private val placeRepository: PlaceRepository, private v
     }
 
     @GetMapping()
-    fun getResource( //?  nálad fura dolgok vannak
+    fun getResource(
             @RequestParam("image") imagePath: String,
     ): ResponseEntity<*> { // UrlResource + HttpStatus
 

@@ -1,9 +1,9 @@
 package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.dto.FilterDto
-import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.exception.MyException
+import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.PlaceInReview
 import hu.zsof.restaurantApp.model.convertToDto
@@ -12,28 +12,28 @@ import hu.zsof.restaurantApp.repository.PlaceRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 @Transactional
 class PlaceService(private val placeRepository: PlaceRepository, private val placeInReviewRepository: PlaceInReviewRepository) {
-    fun newPlace(newPlace: Place): Place {
-        val theNewPlace = Place()
-        theNewPlace.name = newPlace.name
-        theNewPlace.address = newPlace.address
-        theNewPlace.type = newPlace.type
-        theNewPlace.price = newPlace.price
-        theNewPlace.image = newPlace.image
-        theNewPlace.filter = newPlace.filter
-        theNewPlace.phoneNumber = newPlace.phoneNumber
-        theNewPlace.email = newPlace.email
-        theNewPlace.web = newPlace.web
-        theNewPlace.latitude = newPlace.latitude
-        theNewPlace.longitude = newPlace.longitude
-        theNewPlace.openDetails = newPlace.openDetails
-        theNewPlace.rate = 0.0f
-        theNewPlace.usersNumber = 0
-        theNewPlace.user = newPlace.user
+    fun savePlace(newPlace: Place): Place {
+        val theNewPlace = Place(
+                name = newPlace.name,
+                address = newPlace.address,
+                type = newPlace.type,
+                price = newPlace.price,
+                image = newPlace.image,
+                filter = newPlace.filter,
+                phoneNumber = newPlace.phoneNumber,
+                email = newPlace.email,
+                web = newPlace.web,
+                latitude = newPlace.latitude,
+                longitude = newPlace.longitude,
+                openDetails = newPlace.openDetails,
+                rate = newPlace.rate,
+                usersNumber = 0,
+                user = newPlace.user
+        )
         return placeRepository.save(theNewPlace)
     }
 
