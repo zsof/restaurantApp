@@ -23,9 +23,3 @@ The backend ensures the management and storage of the data.
 - Spring Security
 - JPA
 - PostgreSQL
-
-
-
-
-
-
