@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+/install-java.sh
+/src/main/resources/application.properties
+/src/main/resources/private.pem
+/src/main/resources/public.pem

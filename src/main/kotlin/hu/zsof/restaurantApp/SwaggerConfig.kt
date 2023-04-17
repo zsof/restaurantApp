@@ -15,7 +15,7 @@ class SwaggerConfig {
     fun api(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.basePackage("hu.zsof.restaurantApp.controller"))
+            .apis(RequestHandlerSelectors.basePackage("hu.zsof.restaurantApp"))
             .apis(RequestHandlerSelectors.any())
             .paths(PathSelectors.any())
             .build()
