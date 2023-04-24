@@ -7,6 +7,7 @@ import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.PlaceInReview
 import hu.zsof.restaurantApp.model.convertToDto
+import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import org.springframework.http.HttpStatus
@@ -73,9 +74,13 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
             // todo ide nem lehet ? -> filterItems.type== restaurantList.type
         }.toMutableList()
 
-        return getAllFilteredPlace.filter { restaurantList ->
-            filterItems.type == restaurantList.type
-        }.toMutableList()
+        return if (filterItems.type?.equals(Type.EMPTY) == true) {
+            getAllFilteredPlace
+        } else {
+            getAllFilteredPlace.filter { restaurantList ->
+                filterItems.type == restaurantList.type
+            }.toMutableList()
+        }
     }
 
 
