@@ -24,10 +24,9 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
     fun createUser(newUser: MyUser, isAdmin: Boolean = false): MyUser {
         //TODO ezt majd kiszedni
-        if(isAdmin) {
+        if (isAdmin) {
             newUser.userType = ROLE_ADMIN
-        }
-        else {
+        } else {
             newUser.userType = ROLE_USER
         }
         return userRepository.save(newUser)
@@ -83,7 +82,7 @@ class UserService(private val userRepository: UserRepository, private val placeR
         if (!userUpdateProfileDto.password.isNullOrEmpty()) {
             if (ValidationUtils.checkPasswordValidation(userUpdateProfileDto.password)) {
                 updateUser.password = userUpdateProfileDto.password
-            }else {
+            } else {
                 throw MyException("Password format is not correct", HttpStatus.BAD_REQUEST)
             }
         }
@@ -91,6 +90,7 @@ class UserService(private val userRepository: UserRepository, private val placeR
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.nickName = userUpdateProfileDto.nickName ?: updateUser.nickName
+        updateUser.filterItems = userUpdateProfileDto.filters
 
         //updateUser.isAdmin = false
         return userRepository.save(updateUser)

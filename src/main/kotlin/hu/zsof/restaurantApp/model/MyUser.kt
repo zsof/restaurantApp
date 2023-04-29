@@ -26,7 +26,8 @@ class MyUser(
         var places: MutableList<Place> = mutableListOf(),
 
         @ElementCollection
-        var favPlaceIds: MutableList<Long> = mutableListOf()
+        var favPlaceIds: MutableList<Long> = mutableListOf(),
+        var filterItems: Filter = Filter()
 )
 
 fun MyUser.convertToDto(): UserDto {
@@ -37,7 +38,8 @@ fun MyUser.convertToDto(): UserDto {
             this.email,
             this.image,
             this.userType,
-            this.favPlaceIds
+            this.favPlaceIds,
+            this.filterItems
     )
 }
 
