@@ -22,6 +22,8 @@ class PlaceInReviewDto(
         var usersNumber: Int = 0,
         var problem: String? = "",
         var creatorName: String = "",
-        var creatorId: Long = 0
+        var creatorId: Long = 0,
+        var latitude: Double = 0.0,
+        var longitude: Double = 0.0,
 
 )

@@ -55,7 +55,9 @@ fun Place.convertToDto(): PlaceDto {
             web = this.web,
             usersNumber = this.usersNumber,
             creatorName = this.user.name,
-            creatorId = this.user.id
+            creatorId = this.user.id,
+            latitude = this.latitude,
+            longitude = this.longitude,
     )
 }
 
@@ -73,7 +75,8 @@ fun Place.convertToPlaceMapDto(): PlaceMapDto {
             this.name,
             this.address,
             this.latitude,
-            this.longitude
+            this.longitude,
+            this.filter
     )
 }
 

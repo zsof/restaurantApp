@@ -78,7 +78,9 @@ fun PlaceInReview.convertToDto(): PlaceInReviewDto {
             usersNumber = this.usersNumber,
             problem = this.problem,
             creatorName = this.user.name,
-            creatorId = this.user.id
+            creatorId = this.user.id,
+            latitude = this.latitude,
+            longitude = this.longitude
     )
 }
 
