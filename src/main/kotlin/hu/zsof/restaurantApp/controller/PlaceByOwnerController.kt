@@ -1,5 +1,6 @@
 package hu.zsof.restaurantApp.controller
 
+import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.model.*
 import hu.zsof.restaurantApp.model.response.Response
@@ -44,13 +45,27 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
         return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
-    //Update place -TODO
-   /* @PostMapping("update")
-    fun updatePlace(  //??
-            @RequestBody place: Place,
-            @RequestHeader(TOKEN_NAME) token: String
-    ): ResponseEntity<PlaceInReviewDto> {
+    @GetMapping("places")
+    fun getAllPlaceByOwner(@RequestHeader(TOKEN_NAME) token: String): ResponseEntity<List<PlaceDto>> {
         val verification = securityService.verifyToken(token)
-        return ResponseEntity(placeService.updatePlace(place, verification.userId), HttpStatus.OK)
-    }*/
+        val places: MutableList<Place> = placeService.getAllPlaceByOwner(verification.userId)
+        return ResponseEntity<List<PlaceDto>>(places.convertToDto(), HttpStatus.OK)
+    }
+
+    @GetMapping("places-in-review")
+    fun getAllPlaceInReviewByOwner(@RequestHeader(TOKEN_NAME) token: String): ResponseEntity<List<PlaceInReviewDto>> {
+        val verification = securityService.verifyToken(token)
+        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlaceInReviewByOwner(verification.userId)
+        return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
+    }
+
+    //Update place -TODO
+    /* @PostMapping("update")
+     fun updatePlace(  //??
+             @RequestBody place: Place,
+             @RequestHeader(TOKEN_NAME) token: String
+     ): ResponseEntity<PlaceInReviewDto> {
+         val verification = securityService.verifyToken(token)
+         return ResponseEntity(placeService.updatePlace(place, verification.userId), HttpStatus.OK)
+     }*/
 }

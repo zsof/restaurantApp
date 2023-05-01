@@ -1,12 +1,9 @@
 package hu.zsof.restaurantApp.service
 
-import hu.zsof.restaurantApp.dto.PlaceDto
-import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.PlaceInReview
-import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -37,9 +34,18 @@ class PlaceInReviewService(private val placeInReviewRepository: PlaceInReviewRep
         return placeInReviewRepository.save(theNewPlace)
     }
 
-    fun getAllPlace(): MutableList<PlaceInReview> = placeInReviewRepository.findAll()
+    fun getAllPlaceInReview(): MutableList<PlaceInReview> = placeInReviewRepository.findAll()
+    fun getAllPlaceInReviewByOwner(creatorId: Long): MutableList<PlaceInReview> {
+        val ownerPlaces = mutableListOf<PlaceInReview>()
+        placeInReviewRepository.findAll().forEach {
+            if (it.user.id == creatorId) {
+                ownerPlaces.add(it)
+            }
+        }
+        return ownerPlaces
+    }
 
-    fun getPlaceById(id: Long): PlaceInReview {
+    fun getPlaceInReviewById(id: Long): PlaceInReview {
         val placeInReview = placeInReviewRepository.findById(id)
         if (placeInReview.isPresent) {
             return placeInReview.get()
@@ -48,7 +54,7 @@ class PlaceInReviewService(private val placeInReviewRepository: PlaceInReviewRep
         }
     }
 
-    fun deletePlaceById(placeInReviewId: Long) {
+    fun deletePlaceInReviewById(placeInReviewId: Long) {
         if (placeInReviewRepository.existsById(placeInReviewId)) {
             placeInReviewRepository.deleteById(placeInReviewId)
         } else {
@@ -57,19 +63,19 @@ class PlaceInReviewService(private val placeInReviewRepository: PlaceInReviewRep
     }
 
     fun addProblemToReview(placeId: Long, problem: String): PlaceInReview {
-        val placeInReview = getPlaceById(placeId)
+        val placeInReview = getPlaceInReviewById(placeId)
         placeInReview.problem = problem
         return placeInReviewRepository.save(placeInReview)
     }
 
 
     fun acceptPlace(placeId: Long): Place {
-        val placeInReview = getPlaceById(placeId)
+        val placeInReview = getPlaceInReviewById(placeId)
         //Add to Place table
         val newPlace = placeService.savePlace(placeInReview.convertToPlace())
 
         //Delete from PlaceInReview table
-        deletePlaceById(placeId)
+        deletePlaceInReviewById(placeId)
         return newPlace
     }
 }

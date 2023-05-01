@@ -39,6 +39,15 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
     }
 
     fun getAllPlace(): MutableList<Place> = placeRepository.findAll()
+    fun getAllPlaceByOwner(creatorId: Long): MutableList<Place> {
+        val ownerPlaces = mutableListOf<Place>()
+        placeRepository.findAll().forEach {
+            if (it.user.id == creatorId) {
+                ownerPlaces.add(it)
+            }
+        }
+        return ownerPlaces
+    }
 
     fun getPlaceById(id: Long): Place {
         val place = placeRepository.findById(id)

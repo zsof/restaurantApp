@@ -26,13 +26,13 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
     fun getPlaceById(
             @PathVariable id: Long
     ): ResponseEntity<PlaceInReviewDto?> {
-        return ResponseEntity(placeInReviewService.getPlaceById(id).convertToDto(), HttpStatus.OK)
+        return ResponseEntity(placeInReviewService.getPlaceInReviewById(id).convertToDto(), HttpStatus.OK)
     }
 
     // Get all places from PlaceInReview table
     @GetMapping
     fun getAllPlace(): ResponseEntity<List<PlaceInReviewDto>> {
-        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlace()
+        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlaceInReview()
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
     }
 
@@ -41,7 +41,7 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
     fun deletePlaceById(
             @PathVariable id: Long,
     ): ResponseEntity<Response> {
-        placeInReviewService.deletePlaceById(id)
+        placeInReviewService.deletePlaceInReviewById(id)
         return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
