@@ -10,6 +10,7 @@ import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
+import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_OWNER
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
 import hu.zsof.restaurantApp.util.AuthUtils
 import hu.zsof.restaurantApp.util.ValidationUtils
@@ -22,10 +23,12 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
-    fun createUser(newUser: MyUser, isAdmin: Boolean = false): MyUser {
+    fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
         //TODO ezt majd kiszedni
         if (isAdmin) {
             newUser.userType = ROLE_ADMIN
+        } else if (isOwner) {
+            newUser.userType = ROLE_OWNER
         } else {
             newUser.userType = ROLE_USER
         }
