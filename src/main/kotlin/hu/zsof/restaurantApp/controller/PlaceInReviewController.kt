@@ -21,14 +21,6 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
      * Methods that only admin can use
      */
 
-    // Get place from PlaceInReview table
-    @GetMapping("/{id}")
-    fun getPlaceById(
-            @PathVariable id: Long
-    ): ResponseEntity<PlaceInReviewDto?> {
-        return ResponseEntity(placeInReviewService.getPlaceInReviewById(id).convertToDto(), HttpStatus.OK)
-    }
-
     // Get all places from PlaceInReview table
     @GetMapping
     fun getAllPlace(): ResponseEntity<List<PlaceInReviewDto>> {

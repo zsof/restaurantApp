@@ -59,6 +59,14 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
     }
 
+    // Get place from PlaceInReview table
+    @GetMapping("/{id}")
+    fun getPlaceById(
+            @PathVariable id: Long
+    ): ResponseEntity<PlaceInReviewDto?> {
+        return ResponseEntity(placeInReviewService.getPlaceInReviewById(id).convertToDto(), HttpStatus.OK)
+    }
+
     //Update place -TODO
     /* @PostMapping("update")
      fun updatePlace(  //??
