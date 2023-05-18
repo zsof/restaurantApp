@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.exception.MyException
-import hu.zsof.restaurantApp.repository.PlaceRepository
+import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.util.Constants
 import net.bytebuddy.utility.RandomString
@@ -20,9 +20,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 @RestController
-@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
 @RequestMapping("/images")
-class ResourceController(private val placeRepository: PlaceRepository, private val userRepository: UserRepository) {
+class ResourceController(private val placeInReviewRepository: PlaceInReviewRepository, private val userRepository: UserRepository) {
     @PostMapping()
     fun newPlaceOrUserImage(
             @RequestParam("image") file: MultipartFile,
@@ -74,12 +73,12 @@ class ResourceController(private val placeRepository: PlaceRepository, private v
             }
 
             if (trimmedType == "place") {
-                val placeOptional = placeRepository.findById(typeIdLong)
-                if (placeOptional.isPresent) {
+                val placeinReviewOptional = placeInReviewRepository.findById(typeIdLong)
+                if (placeinReviewOptional.isPresent) {
 
-                    val place = placeOptional.get()
-                    place.image = imagePathToSave
-                    placeRepository.save(place)
+                    val placeInReview = placeinReviewOptional.get()
+                    placeInReview.image = imagePathToSave
+                    placeInReviewRepository.save(placeInReview)
                     ResponseEntity<HttpStatus>(HttpStatus.CREATED)
                 }
             } else if (trimmedType == "user") {

@@ -44,7 +44,7 @@ class PlaceInReview(
         return Place(
                 name = this.name,
                 address = this.address,
-               // rate = this.rate,
+                rate = this.rate,
                 price = this.price,
                 image = this.image,
                 type = this.type,
@@ -53,7 +53,7 @@ class PlaceInReview(
                 phoneNumber = this.phoneNumber,
                 email = this.email,
                 web = this.web,
-               // usersNumber = this.usersNumber,
+                usersNumber = this.usersNumber,
                 latitude = this.latitude,
                 longitude = this.longitude,
                 user = MyUser(id = this.user.id)

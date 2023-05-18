@@ -37,12 +37,11 @@ class SecurityConfig2(
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
-
         return http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/images/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/v2/api-docs").permitAll() // for swagger
                 .antMatchers("/swagger-resources/**").permitAll()
@@ -58,6 +57,7 @@ class SecurityConfig2(
                 .httpBasic(Customizer.withDefaults<HttpBasicConfigurer<HttpSecurity>>())
                 //.addFilterBefore(jwtBlackListFilter, UsernamePasswordAuthenticationFilter::class.java)
                 .build()
+
     }
 
     @Bean
