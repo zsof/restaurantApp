@@ -18,7 +18,7 @@ class PlaceInReview(
         var name: String = "",
 
         var address: String = "",
-        //var rate: Float? = 2.0f,
+        var rate: Float? = 2.0f,
         var price: Price = Price.LOW,
         var image: String? = null,
         var phoneNumber: String? = null,
@@ -26,7 +26,7 @@ class PlaceInReview(
         var web: String? = null,
         var latitude: Double = 0.0,
         var longitude: Double = 0.0,
-       // var usersNumber: Int = 0,
+        var usersNumber: Int = 0,
         var type: Type = Type.RESTAURANT,
 
         // Sok place-je lehet egy usernek -> MyUser táblában meg @OneToMany kell

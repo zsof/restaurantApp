@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -19,6 +20,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 @RestController
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
 @RequestMapping("/images")
 class ResourceController(private val placeRepository: PlaceRepository, private val userRepository: UserRepository) {
     @PostMapping()
