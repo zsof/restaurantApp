@@ -1,11 +1,8 @@
 package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.dto.FilterDto
-import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.exception.MyException
-import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.model.PlaceInReview
 import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
@@ -93,37 +90,40 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
     }
 
 
-    fun updatePlace(place: Place, creatorId: Long): PlaceInReviewDto {
-        // todo modosítás oldal ahol jová lehet hagyni modosításokat - eredeti és módosított dolgok egymás mellett látszanak, nem kerül ki rendes oldalra a módosítás amig nem fogadta admin el --> el kell addig tárolni
+    fun updatePlace(place: Place, creatorId: Long): Place {
+        val placeOptional = placeRepository.findById(place.id)
+        if (!placeOptional.isPresent) {
+            throw MyException("Place not found", HttpStatus.NOT_FOUND)
+        }
+        val updatedPlace = placeOptional.get()
         if (place.user.id == creatorId) {
 
-            // Add place to PlaceInReview table with changes
-            val newPlaceInReviewWithUpdates = PlaceInReview()
-            newPlaceInReviewWithUpdates.name = place.name
-            newPlaceInReviewWithUpdates.address = place.address
-            newPlaceInReviewWithUpdates.type = place.type
-            newPlaceInReviewWithUpdates.price = place.price
-            newPlaceInReviewWithUpdates.image = place.image
-            newPlaceInReviewWithUpdates.filter = place.filter
-            newPlaceInReviewWithUpdates.phoneNumber = place.phoneNumber
-            newPlaceInReviewWithUpdates.email = place.email
-            newPlaceInReviewWithUpdates.web = place.web
-            newPlaceInReviewWithUpdates.latitude = place.latitude
-            newPlaceInReviewWithUpdates.longitude = place.longitude
-            newPlaceInReviewWithUpdates.openDetails = place.openDetails
-            newPlaceInReviewWithUpdates.rate = 0.0f
-            newPlaceInReviewWithUpdates.usersNumber = 0
-            newPlaceInReviewWithUpdates.user = place.user
+            // Update place table with changes
+            updatedPlace.name = place.name ?: updatedPlace.name
+            updatedPlace.address = place.address ?: updatedPlace.address
+            updatedPlace.type = place.type ?: updatedPlace.type
+            updatedPlace.price = place.price ?: updatedPlace.price
+            updatedPlace.image = place.image ?: updatedPlace.image
+            updatedPlace.filter = place.filter ?: updatedPlace.filter
+            updatedPlace.phoneNumber = place.phoneNumber ?: updatedPlace.phoneNumber
+            updatedPlace.email = place.email ?: updatedPlace.email
+            updatedPlace.web = place.web ?: updatedPlace.web
+            updatedPlace.latitude = place.latitude ?: updatedPlace.latitude
+            updatedPlace.longitude = place.longitude ?: updatedPlace.longitude
+            updatedPlace.openDetails = place.openDetails ?: updatedPlace.openDetails
 
-            //Save place to PlaceInReview table
-            val placeInReviewWithUpdates = placeInReviewRepository.save(newPlaceInReviewWithUpdates).convertToDto()
+            //These data can not change by update the place
+            updatedPlace.rate = updatedPlace.rate
+            updatedPlace.usersNumber = updatedPlace.usersNumber
+            updatedPlace.user = updatedPlace.user
+
 
             //Delete place from Place table
             // todo id generált, megegyik a placein review idja a place rendes idjával? valószínuleg nem
             placeRepository.deleteById(place.id)
 
             // Add modified place to PlaceInReview able
-            return placeInReviewWithUpdates
+            return updatedPlace
         } else {
             throw MyException("User has no permission to update this place", HttpStatus.FORBIDDEN)
         }
