@@ -71,7 +71,9 @@ class SecurityController(private val userService: UserService, private val secur
         userService.verifyEmail(id, secret)
 
         // test:
-        return "<p style='color: red;'>VERIFICATION SUCCESSFUL</p>"
+        //TODO a link az appot nyissa meg - deep linking
+        return " <p style='color: red;'>Sikeresen regisztráltad az email címed!</p>" +
+                "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot</a>"
 
         // real:
         //return ResponseEntity(Response(true, "VERIFICATION_SUCCESS", ""), HttpStatus.OK)
