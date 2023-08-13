@@ -66,4 +66,9 @@ class SecurityController(private val userService: UserService, private val secur
         }
     }
 
+    @PostMapping
+    fun verifyEmail(){
+
+    }
+
 }
