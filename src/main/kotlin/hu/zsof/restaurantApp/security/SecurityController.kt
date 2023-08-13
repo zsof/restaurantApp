@@ -66,9 +66,15 @@ class SecurityController(private val userService: UserService, private val secur
         }
     }
 
-    @PostMapping
-    fun verifyEmail(){
+    @GetMapping("verify/{id}/{secret}")
+    fun verifyEmail(@PathVariable id: Long, @PathVariable secret: String): String {
+        userService.verifyEmail(id, secret)
 
+        // test:
+        return "<p style='color: red;'>VERIFICATION SUCCESSFUL</p>"
+
+        // real:
+        //return ResponseEntity(Response(true, "VERIFICATION_SUCCESS", ""), HttpStatus.OK)
     }
 
 }

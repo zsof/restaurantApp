@@ -1,24 +1,19 @@
 package hu.zsof.restaurantApp.service
 
-import hu.zsof.restaurantApp.dto.PlaceDto
-import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_OWNER
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
-import hu.zsof.restaurantApp.util.AuthUtils
 import hu.zsof.restaurantApp.util.ValidationUtils
-import org.hibernate.exception.ConstraintViolationException
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 @Transactional
@@ -33,9 +28,10 @@ class UserService(private val mailService: MailService, private val userReposito
             newUser.userType = ROLE_USER
         }
         newUser.isVerified = false
+        newUser.verificationSecret = UUID.randomUUID().toString()
 
         val savedUser = userRepository.save(newUser)
-        mailService.sendVerifyRegisterEmail(emailTo = savedUser.email, userName = savedUser.name, verificationToken = "token")
+        mailService.sendVerifyRegisterEmail(savedUser)
         return savedUser
     }
 
@@ -139,5 +135,17 @@ class UserService(private val mailService: MailService, private val userReposito
         val userFavPlaceIds = userOptional.get().favPlaceIds
 
         return placeRepository.findAllById(userFavPlaceIds)
+    }
+
+
+    fun verifyEmail(id: Long, secret: String) {
+        val user = getUserById(id)
+        if (user.verificationSecret == secret) {
+            user.isVerified = true
+            userRepository.save(user)
+        } else {
+            throw MyException("Secret is wrong", HttpStatus.BAD_REQUEST)
+        }
+
     }
 }

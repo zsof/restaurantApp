@@ -51,6 +51,4 @@ class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder
             VerificationResponse(verified = false, errorMessage = e.localizedMessage)
         }
     }
-
 }
-
