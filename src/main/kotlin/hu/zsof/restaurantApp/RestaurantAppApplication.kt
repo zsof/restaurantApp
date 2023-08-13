@@ -12,4 +12,6 @@ class RestaurantAppApplication
 
 fun main(args: Array<String>) {
     runApplication<RestaurantAppApplication>(*args)
+
+
 }

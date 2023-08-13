@@ -18,6 +18,7 @@ class MyUser(
         var password: String = "",
         var image: String? = null,
         var userType: String = ROLE_USER,
+        var isVerified: Boolean = false,
 
         //Ha törlődnek a place-k, a usernek meg kell maradnia -->PERSIST
         //Ha törlődne a user és akarom h törlődjenek a place-ei -->REMOVE

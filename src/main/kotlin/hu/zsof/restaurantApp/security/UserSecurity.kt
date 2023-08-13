@@ -35,7 +35,7 @@ class UserSecurity (private val user: MyUser) : UserDetails {
     }
 
     override fun isEnabled(): Boolean {
-        return true
+        return user.isVerified
     }
 
 }

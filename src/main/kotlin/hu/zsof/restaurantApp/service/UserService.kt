@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
+class UserService(private val mailService: MailService, private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
     fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
         //TODO ezt majd kiszedni
         if (isAdmin) {
@@ -32,7 +32,11 @@ class UserService(private val userRepository: UserRepository, private val placeR
         } else {
             newUser.userType = ROLE_USER
         }
-        return userRepository.save(newUser)
+        newUser.isVerified = false
+
+        val savedUser = userRepository.save(newUser)
+        mailService.sendVerifyRegisterEmail(emailTo = savedUser.email, userName = savedUser.name, verificationToken = "token")
+        return savedUser
     }
 
     fun getAllUser(): MutableList<MyUser> = userRepository.findAll()
