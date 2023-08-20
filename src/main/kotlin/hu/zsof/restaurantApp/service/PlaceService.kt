@@ -3,7 +3,6 @@ package hu.zsof.restaurantApp.service
 import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
@@ -30,16 +29,16 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
                 openDetails = newPlace.openDetails,
                 rate = newPlace.rate,
                 usersNumber = 0,
-                user = newPlace.user
+                creator = newPlace.creator
         )
         return placeRepository.save(theNewPlace)
     }
 
-    fun getAllPlace(): MutableList<Place> = placeRepository.findAll()
+    fun getAllPlace(): MutableList<Place> = placeRepository.findAll().filter { it.isVisible }.toMutableList()
     fun getAllPlaceByOwner(creatorId: Long): MutableList<Place> {
         val ownerPlaces = mutableListOf<Place>()
         placeRepository.findAll().forEach {
-            if (it.user.id == creatorId) {
+            if (it.creator.id == creatorId) {
                 ownerPlaces.add(it)
             }
         }
@@ -58,7 +57,7 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
     fun deletePlaceByIdByUser(placeId: Long, creatorId: Long) {
         val place = getPlaceById(placeId)
 
-        if (place.user.id == creatorId) {
+        if (place.creator.id == creatorId) {
             deletePlaceById(placeId)
         } else {
             throw MyException("User has no permission to delete this place", HttpStatus.FORBIDDEN)
@@ -96,36 +95,36 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
             throw MyException("Place not found", HttpStatus.NOT_FOUND)
         }
         val updatedPlace = placeOptional.get()
-        if (place.user.id == creatorId) {
+        if (updatedPlace.creator.id == creatorId) {
 
             // Update place table with changes
-            updatedPlace.name = place.name ?: updatedPlace.name
-            updatedPlace.address = place.address ?: updatedPlace.address
-            updatedPlace.type = place.type ?: updatedPlace.type
-            updatedPlace.price = place.price ?: updatedPlace.price
+            updatedPlace.name = place.name
+            updatedPlace.address = place.address
+            updatedPlace.type = place.type
+            updatedPlace.price = place.price
             updatedPlace.image = place.image ?: updatedPlace.image
-            updatedPlace.filter = place.filter ?: updatedPlace.filter
+            updatedPlace.filter = place.filter
             updatedPlace.phoneNumber = place.phoneNumber ?: updatedPlace.phoneNumber
             updatedPlace.email = place.email ?: updatedPlace.email
             updatedPlace.web = place.web ?: updatedPlace.web
-            updatedPlace.latitude = place.latitude ?: updatedPlace.latitude
-            updatedPlace.longitude = place.longitude ?: updatedPlace.longitude
-            updatedPlace.openDetails = place.openDetails ?: updatedPlace.openDetails
+            updatedPlace.latitude = place.latitude
+            updatedPlace.longitude = place.longitude
+            updatedPlace.openDetails = place.openDetails
 
             //These data can not change by update the place
             updatedPlace.rate = updatedPlace.rate
             updatedPlace.usersNumber = updatedPlace.usersNumber
-            updatedPlace.user = updatedPlace.user
+            updatedPlace.creator = updatedPlace.creator
+
+            updatedPlace.isModified = true
+            updatedPlace.isVisible = updatedPlace.isVisible
 
 
-            //Delete place from Place table
-            // todo id generált, megegyik a placein review idja a place rendes idjával? valószínuleg nem
-            placeRepository.deleteById(place.id)
+            //Save place from
+            return placeRepository.save(updatedPlace)
 
-            // Add modified place to PlaceInReview able
-            return updatedPlace
         } else {
-            throw MyException("User has no permission to update this place", HttpStatus.FORBIDDEN)
+            throw MyException("User has no permission to update this place", HttpStatus.BAD_REQUEST)
         }
 
     }

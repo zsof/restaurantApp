@@ -24,7 +24,7 @@ class MyUser(
         //Ha törlődnek a place-k, a usernek meg kell maradnia -->PERSIST
         //Ha törlődne a user és akarom h törlődjenek a place-ei -->REMOVE
         //Place táblában a "user"-hez van kapcsolva
-        @OneToMany(mappedBy = "user", cascade = [CascadeType.PERSIST])
+        @OneToMany(mappedBy = "creator", cascade = [CascadeType.PERSIST])
         var places: MutableList<Place> = mutableListOf(),
 
         @ElementCollection

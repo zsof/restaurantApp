@@ -2,8 +2,8 @@ package hu.zsof.restaurantApp.model
 
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceMapDto
-import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
+import hu.zsof.restaurantApp.model.enum.Type
 import javax.persistence.*
 
 @Entity
@@ -28,11 +28,15 @@ class Place(
         var longitude: Double = 0.0,
         var usersNumber: Int = 0,
 
+        var isModified: Boolean = false,
+        var isVisible: Boolean = true,
+        var problem: String? = null,
+
         var type: Type = Type.RESTAURANT,
 
         // Sok place-je lehet egy usernek -> MyUser táblában meg @OneToMany kell
         @ManyToOne
-        var user: MyUser = MyUser(),
+        var creator: MyUser = MyUser(),
 
         @Embedded
         var filter: Filter = Filter(),
@@ -56,10 +60,12 @@ fun Place.convertToDto(): PlaceDto {
             email = this.email,
             web = this.web,
             usersNumber = this.usersNumber,
-            creatorName = this.user.name,
-            creatorId = this.user.id,
+            creatorName = this.creator.name,
+            creatorId = this.creator.id,
             latitude = this.latitude,
             longitude = this.longitude,
+            isModified = this.isModified,
+            problem = this.problem
     )
 }
 

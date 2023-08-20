@@ -17,7 +17,10 @@ import java.util.*
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER')")
 @RequestMapping("/places-owner")
-class PlaceByOwnerController(private val placeService: PlaceService, private val placeInReviewService: PlaceInReviewService, private val securityService: SecurityService) {
+class PlaceByOwnerController(
+        private val placeService: PlaceService,
+        private val placeInReviewService: PlaceInReviewService,
+        private val securityService: SecurityService) {
 
     /**
      * Methods that only owner and admin can use
@@ -67,13 +70,13 @@ class PlaceByOwnerController(private val placeService: PlaceService, private val
         return ResponseEntity(placeInReviewService.getPlaceInReviewById(id).convertToDto(), HttpStatus.OK)
     }
 
-    //Update place -TODO
-    /* @PostMapping("update")
-     fun updatePlace(  //??
-             @RequestBody place: Place,
-             @RequestHeader(TOKEN_NAME) token: String
-     ): ResponseEntity<PlaceInReviewDto> {
-         val verification = securityService.verifyToken(token)
-         return ResponseEntity(placeService.updatePlace(place, verification.userId), HttpStatus.OK)
-     }*/
+    @PostMapping("update")
+    fun updatePlace(
+            @RequestBody place: Place,
+            @RequestHeader(TOKEN_NAME) token: String
+    ): ResponseEntity<PlaceDto> {
+        val verification = securityService.verifyToken(token)
+        val modifiedPlace = placeService.updatePlace(place, verification.userId).convertToDto()
+        return ResponseEntity(modifiedPlace, HttpStatus.OK)
+    }
 }

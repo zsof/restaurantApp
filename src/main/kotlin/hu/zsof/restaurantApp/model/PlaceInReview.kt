@@ -1,10 +1,8 @@
 package hu.zsof.restaurantApp.model
 
-import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
-import hu.zsof.restaurantApp.dto.PlaceMapDto
-import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
+import hu.zsof.restaurantApp.model.enum.Type
 import javax.persistence.*
 
 @Entity
@@ -56,7 +54,7 @@ class PlaceInReview(
                 usersNumber = this.usersNumber,
                 latitude = this.latitude,
                 longitude = this.longitude,
-                user = MyUser(id = this.user.id)
+                creator = MyUser(id = this.user.id)
         )
     }
 }

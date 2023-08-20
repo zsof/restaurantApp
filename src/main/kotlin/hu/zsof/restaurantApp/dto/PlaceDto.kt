@@ -1,10 +1,9 @@
 package hu.zsof.restaurantApp.dto
 
 import hu.zsof.restaurantApp.model.Filter
-import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.OpenDetails
-import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.model.enum.Price
+import hu.zsof.restaurantApp.model.enum.Type
 
 class PlaceDto(
         val id: Long = 0,
@@ -25,4 +24,6 @@ class PlaceDto(
         var creatorId: Long = 0,
         var latitude: Double = 0.0,
         var longitude: Double = 0.0,
+        var isModified: Boolean = false,
+        var problem: String? = null,
 )
