@@ -1,8 +1,7 @@
 package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.model.MyUser
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.Resource
+import hu.zsof.restaurantApp.security.RsaKeyProperties
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
@@ -15,8 +14,7 @@ class MailService constructor(private val javaMailSender: JavaMailSender) {
         const val EMAIL_FROM = "taprakihh@gmail.com"
     }
 
-    @Value("classpath:/html/register.email.html")
-    var resource: Resource? = null
+
 
     fun sendVerifyRegisterEmail(user: MyUser) {
         val mimeMessage = javaMailSender.createMimeMessage()
@@ -24,7 +22,7 @@ class MailService constructor(private val javaMailSender: JavaMailSender) {
         mimeMessage.subject = "Verify your email"
         mimeMessage.addRecipients(Message.RecipientType.TO, user.email)
 
-        val messageTemplate = resource?.file
+        val messageTemplate = RsaKeyProperties().resource?.file
         if (messageTemplate != null) {
             var content = String((Files.readAllBytes(messageTemplate.toPath())))
             content = content.replace("[USERNAME]", user.name)
