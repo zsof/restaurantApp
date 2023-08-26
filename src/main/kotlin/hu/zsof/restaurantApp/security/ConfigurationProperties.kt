@@ -7,7 +7,7 @@ import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 
 @ConfigurationProperties(prefix = "rsa")
-class RsaKeyProperties {
+class ConfigurationProperties {
     @Value("\${rsa.private-key}")
     var rsaPrivateKey: RSAPrivateKey? = null
 

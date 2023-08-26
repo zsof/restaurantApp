@@ -31,7 +31,7 @@ import java.util.stream.Collectors
 @EnableMethodSecurity
 class SecurityConfig2(
         private val securityUserDetailService: UserSecurityDetailService,
-        private val rsaKeyProperties: RsaKeyProperties
+        private val configurationProperties: ConfigurationProperties
 ) {
 
     @Bean
@@ -62,12 +62,12 @@ class SecurityConfig2(
 
     @Bean
     fun jwtDecoder(): JwtDecoder {
-        return NimbusJwtDecoder.withPublicKey(rsaKeyProperties.rsaPublicKey).build()
+        return NimbusJwtDecoder.withPublicKey(configurationProperties.rsaPublicKey).build()
     }
 
     @Bean
     fun jwtEncoder(): JwtEncoder {
-        val rsaKey = RSAKey.Builder(rsaKeyProperties.rsaPublicKey).privateKey(rsaKeyProperties.rsaPrivateKey).build()
+        val rsaKey = RSAKey.Builder(configurationProperties.rsaPublicKey).privateKey(configurationProperties.rsaPrivateKey).build()
         val jwkSource = ImmutableJWKSet<SecurityContext>(JWKSet(rsaKey))
 
         return NimbusJwtEncoder(jwkSource)

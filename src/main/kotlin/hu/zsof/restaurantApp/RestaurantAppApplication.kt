@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp
 
 import hu.zsof.restaurantApp.model.MyUser
-import hu.zsof.restaurantApp.security.RsaKeyProperties
+import hu.zsof.restaurantApp.security.ConfigurationProperties
 import hu.zsof.restaurantApp.service.UserService
 import hu.zsof.restaurantApp.util.AuthUtils
 import org.springframework.boot.CommandLineRunner
@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 
-@EnableConfigurationProperties(RsaKeyProperties::class)
+@EnableConfigurationProperties(ConfigurationProperties::class)
 @SpringBootApplication
 class RestaurantAppApplication {
     @Bean
