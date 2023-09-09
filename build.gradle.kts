@@ -35,7 +35,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("com.auth0:java-jwt:4.2.1")
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("com.h2database:h2")
+   // runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 noArg {

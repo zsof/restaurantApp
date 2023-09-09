@@ -1,7 +1,7 @@
 package hu.zsof.restaurantApp.service
 
 import hu.zsof.restaurantApp.model.MyUser
-import hu.zsof.restaurantApp.security.ConfigurationProperties
+import hu.zsof.restaurantApp.util.RestaurantConfigurations
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
@@ -9,11 +9,13 @@ import java.nio.file.Files
 import javax.mail.Message
 
 @Service
-class MailService constructor(private val javaMailSender: JavaMailSender) {
+class MailService constructor(
+        private val javaMailSender: JavaMailSender,
+        private val restaurantConfigurations: RestaurantConfigurations
+) {
     companion object {
         const val EMAIL_FROM = "taprakihh@gmail.com"
     }
-
 
 
     fun sendVerifyRegisterEmail(user: MyUser) {
@@ -22,7 +24,7 @@ class MailService constructor(private val javaMailSender: JavaMailSender) {
         mimeMessage.subject = "Verify your email"
         mimeMessage.addRecipients(Message.RecipientType.TO, user.email)
 
-        val messageTemplate = ConfigurationProperties().resource?.file
+        val messageTemplate = restaurantConfigurations.verifyTemplate?.file
         if (messageTemplate != null) {
             var content = String((Files.readAllBytes(messageTemplate.toPath())))
             content = content.replace("[USERNAME]", user.name)
@@ -33,6 +35,8 @@ class MailService constructor(private val javaMailSender: JavaMailSender) {
             helper.setText(content, true)
 
             javaMailSender.send(mimeMessage)
+        } else {
+            throw Exception("message template null")
         }
     }
 

@@ -1,19 +1,15 @@
 package hu.zsof.restaurantApp
 
-import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.security.ConfigurationProperties
-import hu.zsof.restaurantApp.service.UserService
-import hu.zsof.restaurantApp.util.AuthUtils
-import org.springframework.boot.CommandLineRunner
+import hu.zsof.restaurantApp.util.RestaurantConfigurations
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
 
-@EnableConfigurationProperties(ConfigurationProperties::class)
+@EnableConfigurationProperties(ConfigurationProperties::class, RestaurantConfigurations::class)
 @SpringBootApplication
 class RestaurantAppApplication {
-    @Bean
+    /*@Bean
     fun commandLineRunner(userService: UserService): CommandLineRunner {
         return CommandLineRunner { args ->
 
@@ -28,7 +24,7 @@ class RestaurantAppApplication {
             userService.verifyEmail(owner.id, owner.verificationSecret)
             userService.verifyEmail(user.id, user.verificationSecret)
         }
-    }
+    }*/
 }
 
 fun main(args: Array<String>) {
