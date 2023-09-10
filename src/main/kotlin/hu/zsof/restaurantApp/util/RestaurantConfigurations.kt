@@ -7,6 +7,6 @@ import org.springframework.core.io.Resource
 @ConfigurationProperties
 class RestaurantConfigurations {
 
-    @Value("classpath:/html/register.email.html")
+    @Value("classpath:html/register.email.html")
     var verifyTemplate: Resource? = null
 }

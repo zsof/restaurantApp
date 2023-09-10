@@ -5,7 +5,6 @@ import hu.zsof.restaurantApp.util.RestaurantConfigurations
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
-import java.nio.file.Files
 import javax.mail.Message
 
 @Service
@@ -24,9 +23,9 @@ class MailService constructor(
         mimeMessage.subject = "Verify your email"
         mimeMessage.addRecipients(Message.RecipientType.TO, user.email)
 
-        val messageTemplate = restaurantConfigurations.verifyTemplate?.file
+        val messageTemplate = restaurantConfigurations.verifyTemplate?.inputStream
         if (messageTemplate != null) {
-            var content = String((Files.readAllBytes(messageTemplate.toPath())))
+            var content = String(messageTemplate.readAllBytes())
             content = content.replace("[USERNAME]", user.name)
             content = content.replace("[ID]", user.id.toString())
             content = content.replace("[SECRET]", user.verificationSecret)
