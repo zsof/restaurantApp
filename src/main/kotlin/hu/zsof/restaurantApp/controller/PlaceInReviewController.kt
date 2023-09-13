@@ -34,15 +34,6 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
         return ResponseEntity<List<PlaceDto>>(modifiedPlaces.convertToDto(), HttpStatus.OK)
     }
 
-    // Delete any place from Place table
-    @DeleteMapping("places/{id}")
-    fun deletePlaceById(
-            @PathVariable id: Long,
-    ): ResponseEntity<Response> {
-        placeInReviewService.deletePlaceInReviewById(id)
-        return ResponseEntity(Response(true), HttpStatus.OK)
-    }
-
     @PostMapping("accept/{placeId}")
     fun acceptPlace(
             @PathVariable placeId: Long,

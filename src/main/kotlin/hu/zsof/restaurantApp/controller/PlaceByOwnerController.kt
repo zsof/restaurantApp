@@ -48,6 +48,15 @@ class PlaceByOwnerController(
         return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
+    // Delete any place from PlaceIntReview table
+    @DeleteMapping("place-review/{id}")
+    fun deletePlaceById(
+            @PathVariable id: Long,
+    ): ResponseEntity<Response> {
+        placeInReviewService.deletePlaceInReviewById(id)
+        return ResponseEntity(Response(true), HttpStatus.OK)
+    }
+
     @GetMapping("places")
     fun getAllPlaceByOwner(@RequestHeader(TOKEN_NAME) token: String): ResponseEntity<List<PlaceDto>> {
         val verification = securityService.verifyToken(token)
