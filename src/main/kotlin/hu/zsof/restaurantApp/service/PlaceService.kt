@@ -79,10 +79,14 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
             // todo ide nem lehet ? -> filterItems.type== restaurantList.type
         }.toMutableList()
 
+        val getAllPriceFilteredPlace = getAllFilteredPlace.filter { restaurantList ->
+            filterItems.price == restaurantList.price
+        }.toMutableList()
+
         return if (filterItems.type?.equals(Type.EMPTY) == true) {
-            getAllFilteredPlace
+            getAllPriceFilteredPlace
         } else {
-            getAllFilteredPlace.filter { restaurantList ->
+            getAllPriceFilteredPlace.filter { restaurantList ->
                 filterItems.type == restaurantList.type
             }.toMutableList()
         }
