@@ -6,6 +6,5 @@ enum class Type {
     PATISSERIE,
     BAKERY,
     BAR,
-    FAST_FOOD,
-    EMPTY
+    FAST_FOOD
 }

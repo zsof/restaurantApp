@@ -3,7 +3,6 @@ package hu.zsof.restaurantApp.service
 import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.model.enum.Type
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import org.springframework.http.HttpStatus
@@ -79,11 +78,15 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
             // todo ide nem lehet ? -> filterItems.type== restaurantList.type
         }.toMutableList()
 
-        val getAllPriceFilteredPlace = getAllFilteredPlace.filter { restaurantList ->
-            filterItems.price == restaurantList.price
-        }.toMutableList()
+        val getAllPriceFilteredPlace = if (filterItems.price == null) {
+            getAllFilteredPlace
+        } else {
+            getAllFilteredPlace.filter { restaurantList ->
+                filterItems.price == restaurantList.price
+            }.toMutableList()
+        }
 
-        return if (filterItems.type?.equals(Type.EMPTY) == true) {
+        return if (filterItems.type == null) {
             getAllPriceFilteredPlace
         } else {
             getAllPriceFilteredPlace.filter { restaurantList ->
