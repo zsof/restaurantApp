@@ -9,7 +9,7 @@ import org.springframework.boot.runApplication
 @EnableConfigurationProperties(ConfigurationProperties::class, RestaurantConfigurations::class)
 @SpringBootApplication
 class RestaurantAppApplication {
-    /*@Bean
+   /* @Bean
     fun commandLineRunner(userService: UserService): CommandLineRunner {
         return CommandLineRunner { args ->
 

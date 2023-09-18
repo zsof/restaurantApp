@@ -133,6 +133,5 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
         } else {
             throw MyException("User has no permission to update this place", HttpStatus.BAD_REQUEST)
         }
-
     }
 }
