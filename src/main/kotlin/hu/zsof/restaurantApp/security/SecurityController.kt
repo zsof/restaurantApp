@@ -52,7 +52,7 @@ class SecurityController(private val userService: UserService, private val secur
             try {
                 userService.createUser(
                         MyUser(
-                                email = loginData.email, password = AuthUtils.passwordEncoder.encode(loginData.password), name = loginData.name, nickName = loginData.nickName
+                                email = loginData.email, password = AuthUtils.passwordEncoder.encode(loginData.password), name = loginData.name
                         ),
                         isAdmin ?: false,
                         isOwner ?: false

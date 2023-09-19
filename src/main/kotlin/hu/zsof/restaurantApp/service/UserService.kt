@@ -92,7 +92,6 @@ class UserService(private val mailService: MailService, private val userReposito
 
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
-        updateUser.nickName = userUpdateProfileDto.nickName ?: updateUser.nickName
         updateUser.filterItems = userUpdateProfileDto.filters
 
         //updateUser.isAdmin = false
