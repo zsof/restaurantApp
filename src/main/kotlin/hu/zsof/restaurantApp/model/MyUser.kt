@@ -12,7 +12,6 @@ class MyUser(
         @Column(nullable = false, updatable = false, name = "myuser_id")
         val id: Long = 0,
         var name: String = "",
-        var nickName: String? = null,
         @Column(unique = true)
         var email: String = "",
         var password: String = "",
@@ -36,7 +35,6 @@ fun MyUser.convertToDto(): UserDto {
     return UserDto(
             this.id,
             this.name,
-            this.nickName,
             this.email,
             this.image,
             this.userType,
