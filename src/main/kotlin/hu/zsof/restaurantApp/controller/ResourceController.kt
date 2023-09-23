@@ -146,7 +146,6 @@ class ResourceController(
     fun deleteImage(imagePath: String?) {
         // delete image if exists
         if (imagePath != null && imagePath != "") {
-            println("törlésben bent $imagePath")
             val splits = imagePath.split('-')
             val directoryName = splits[0]
             val fileName = splits[1]

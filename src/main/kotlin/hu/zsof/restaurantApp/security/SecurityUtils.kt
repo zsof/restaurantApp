@@ -1,7 +1,9 @@
 package hu.zsof.restaurantApp.security
 
+import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.response.VerificationResponse
+import org.springframework.http.HttpStatus
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -36,19 +38,16 @@ class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder
 
     fun verifyToken(bearerToken: String): VerificationResponse {
         if (bearerToken.isNullOrEmpty()) {
-            return VerificationResponse(verified = false, errorMessage = "Empty Token")
+            throw MyException("Jwt token empty", HttpStatus.UNAUTHORIZED)
         }
         val token = bearerToken.replace("Bearer ", "")
-        return try {
-            val jwt: Jwt = jwtDecoder.decode(token)
-            val role: String = jwt.getClaim(CLAIM_ROLE)
-            val isAdmin = role == ROLE_ADMIN
-            val userId: Long = jwt.subject.toLong()
-
-            VerificationResponse(verified = true, isAdmin = isAdmin, userId = userId)
-        } catch (e: Exception) {
-            //Invalid signature/claims
-            VerificationResponse(verified = false, errorMessage = e.localizedMessage)
+        val jwt: Jwt = jwtDecoder.decode(token)
+        val role: String = jwt.getClaim(CLAIM_ROLE)
+        val isAdmin = role == ROLE_ADMIN
+        val userId: Long = jwt.subject.toLong()
+        if (jwt.expiresAt == null || jwt.expiresAt?.isBefore(Instant.now()) == true) {
+            throw MyException("Jwt Expired", HttpStatus.UNAUTHORIZED)
         }
+        return VerificationResponse(verified = true, isAdmin = isAdmin, userId = userId)
     }
 }

@@ -4,10 +4,12 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.proc.SecurityContext
+import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.security.SecurityService.Companion.CLAIM_ROLE
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -23,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
+import java.time.Instant
 import java.util.stream.Collectors
 
 
@@ -90,6 +93,10 @@ class SecurityConfig2(
 class JwtRoleConverter : Converter<Jwt?, Collection<GrantedAuthority?>?> {
     override fun convert(source: Jwt): Collection<GrantedAuthority> {
         val roles = source.getClaimAsStringList(CLAIM_ROLE)
+
+        if (source.expiresAt == null || source.expiresAt?.isBefore(Instant.now()) == true) {
+            throw MyException("Jwt Expired", HttpStatus.UNAUTHORIZED)
+        }
 
         return roles.stream().map { role: String? ->
             SimpleGrantedAuthority(role)

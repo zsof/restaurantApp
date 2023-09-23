@@ -27,10 +27,8 @@ class SecurityController(private val userService: UserService, private val secur
             response: HttpServletResponse
     ): ResponseEntity<LoggedUserResponse> {
         val verification = securityService.verifyToken(token)
-
         val user = userService.getUserById(verification.userId)
         return ResponseEntity(LoggedUserResponse(true, "", "", user.convertToDto()), HttpStatus.OK)
-
     }
 
     @PostMapping("/login")
@@ -42,7 +40,6 @@ class SecurityController(private val userService: UserService, private val secur
         return ResponseEntity(LoggedUserResponse(true, "", "Login Successful", user.convertToDto()), HttpStatus.OK)
     }
 
-    //TODO majd kiszedni az isADmin részt
     @PostMapping("/register")
     fun register(@RequestBody loginData: LoginData, @RequestHeader isAdmin: Boolean?, @RequestHeader isOwner: Boolean?): ResponseEntity<Response> {
         if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
@@ -70,8 +67,6 @@ class SecurityController(private val userService: UserService, private val secur
     fun verifyEmail(@PathVariable id: Long, @PathVariable secret: String): String {
         userService.verifyEmail(id, secret)
 
-        // test:
-        //TODO a link az appot nyissa meg - deep linking
         return " <p style='color: red;'>Sikeresen regisztráltad az email címed!</p>" +
                 "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot</a>"
 

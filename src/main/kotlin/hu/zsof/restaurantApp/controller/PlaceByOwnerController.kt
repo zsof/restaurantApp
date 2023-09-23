@@ -11,6 +11,7 @@ import hu.zsof.restaurantApp.service.PlaceService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -30,10 +31,10 @@ class PlaceByOwnerController(
     @PostMapping("new-place")
     fun newPlace(
             @RequestBody placeInReview: PlaceInReview,
-            @RequestHeader(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String,
+            authentication: Authentication
     ): ResponseEntity<PlaceInReviewDto> {
-        val verification = securityService.verifyToken(token)
-        val newPlaceInReview = placeInReviewService.savePlaceInReview(placeInReview, verification.userId)
+        val newPlaceInReview = placeInReviewService.savePlaceInReview(placeInReview, authentication.name.toLong())
         return ResponseEntity(newPlaceInReview.convertToDto(), HttpStatus.CREATED)
     }
 
@@ -41,10 +42,10 @@ class PlaceByOwnerController(
     @DeleteMapping("places/{id}")
     fun deletePlaceById(
             @PathVariable id: Long,
-            @RequestHeader(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String,
+            authentication: Authentication
     ): ResponseEntity<Response> {
-        val verification = securityService.verifyToken(token)
-        placeService.deletePlaceByIdByUser(id, verification.userId)
+        placeService.deletePlaceByIdByUser(id, authentication.name.toLong())
         return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
@@ -58,16 +59,20 @@ class PlaceByOwnerController(
     }
 
     @GetMapping("places")
-    fun getAllPlaceByOwner(@RequestHeader(TOKEN_NAME) token: String): ResponseEntity<List<PlaceDto>> {
-        val verification = securityService.verifyToken(token)
-        val places: MutableList<Place> = placeService.getAllPlaceByOwner(verification.userId)
+    fun getAllPlaceByOwner(
+            @RequestHeader(TOKEN_NAME) token: String,
+            authentication: Authentication
+    ): ResponseEntity<List<PlaceDto>> {
+        val places: MutableList<Place> = placeService.getAllPlaceByOwner(authentication.name.toLong())
         return ResponseEntity<List<PlaceDto>>(places.convertToDto(), HttpStatus.OK)
     }
 
     @GetMapping("places-in-review")
-    fun getAllPlaceInReviewByOwner(@RequestHeader(TOKEN_NAME) token: String): ResponseEntity<List<PlaceInReviewDto>> {
-        val verification = securityService.verifyToken(token)
-        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlaceInReviewByOwner(verification.userId)
+    fun getAllPlaceInReviewByOwner(
+            @RequestHeader(TOKEN_NAME) token: String,
+            authentication: Authentication
+    ): ResponseEntity<List<PlaceInReviewDto>> {
+        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlaceInReviewByOwner(authentication.name.toLong())
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
     }
 
@@ -82,10 +87,10 @@ class PlaceByOwnerController(
     @PostMapping("update")
     fun updatePlace(
             @RequestBody place: Place,
-            @RequestHeader(TOKEN_NAME) token: String
+            @RequestHeader(TOKEN_NAME) token: String,
+            authentication: Authentication
     ): ResponseEntity<PlaceDto> {
-        val verification = securityService.verifyToken(token)
-        val modifiedPlace = placeService.updatePlace(place, verification.userId).convertToDto()
+        val modifiedPlace = placeService.updatePlace(place, authentication.name.toLong()).convertToDto()
         return ResponseEntity(modifiedPlace, HttpStatus.OK)
     }
 }
