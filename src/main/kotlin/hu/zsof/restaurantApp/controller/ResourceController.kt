@@ -2,6 +2,7 @@ package hu.zsof.restaurantApp.controller
 
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
+import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.util.Constants
 import net.bytebuddy.utility.RandomString
@@ -22,7 +23,7 @@ import java.nio.file.Paths
 @RequestMapping("/images")
 class ResourceController(
         private val placeInReviewRepository: PlaceInReviewRepository,
-        private val placeRepository: UserRepository,
+        private val placeRepository: PlaceRepository,
         private val userRepository: UserRepository
 ) {
     @PostMapping()
@@ -33,9 +34,10 @@ class ResourceController(
             // Place or PlaceInReview or User
             @RequestParam("type") type: String,
             // Previous image - must delete if there's an update
-            @RequestParam("previous-image") previousImagePath: String,
+            @RequestParam("previous-image") previousImagePath: String?,
     ): ResponseEntity<*> {
         deleteImage(previousImagePath)
+        println("after delete")
 
         val typeIdLong = itemId.trim().replace("\"", "").toLongOrNull()
         val trimmedType = type.trim().replace("\"", "")
@@ -54,14 +56,7 @@ class ResourceController(
                 directory.mkdir()
             }
 
-            if (trimmedType == Constants.IMAGE_PLACE_IN_REVIEW_TYPE) {
-                imageDirectory = Constants.IMAGE_PLACE_IN_REVIEW_PATH
-                imageDirectoryName = Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME
-                val directoryPlaces = File(imageDirectory)
-                if (!directoryPlaces.exists()) {
-                    directoryPlaces.mkdir()
-                }
-            } else if (trimmedType == Constants.IMAGE_PLACE_TYPE) {
+            if (trimmedType == Constants.IMAGE_PLACE_TYPE || trimmedType == Constants.IMAGE_PLACE_IN_REVIEW_TYPE) {
                 imageDirectory = Constants.IMAGE_PLACE_PATH
                 imageDirectoryName = Constants.IMAGE_PLACE_PATH_NAME
                 val directoryPlaces = File(imageDirectory)
@@ -151,6 +146,7 @@ class ResourceController(
     fun deleteImage(imagePath: String?) {
         // delete image if exists
         if (imagePath != null && imagePath != "") {
+            println("törlésben bent $imagePath")
             val splits = imagePath.split('-')
             val directoryName = splits[0]
             val fileName = splits[1]
