@@ -4,6 +4,7 @@ import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
+import hu.zsof.restaurantApp.repository.CommentRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
@@ -17,9 +18,13 @@ import java.util.*
 
 @Service
 @Transactional
-class UserService(private val mailService: MailService, private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
+class UserService(
+        private val mailService: MailService,
+        private val userRepository: UserRepository,
+        private val placeRepository: PlaceRepository,
+        private val commentRepository: CommentRepository
+) {
     fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
-        //TODO ezt majd kiszedni
         if (isAdmin) {
             newUser.userType = ROLE_ADMIN
         } else if (isOwner) {
@@ -72,8 +77,6 @@ class UserService(private val mailService: MailService, private val userReposito
         }
         val updateUser = userOptional.get()
 
-
-
         if (!userUpdateProfileDto.email.isNullOrEmpty()) {
             if (ValidationUtils.checkEmailValidation(userUpdateProfileDto.email)) {
                 updateUser.email = userUpdateProfileDto.email
@@ -93,6 +96,11 @@ class UserService(private val mailService: MailService, private val userReposito
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.filterItems = userUpdateProfileDto.filters
+
+        val commentsByUser = commentRepository.findAllByUserId(userId)
+        commentsByUser.forEach {
+            it.userName = userUpdateProfileDto.name ?: updateUser.name
+        }
 
         //updateUser.isAdmin = false
         return userRepository.save(updateUser)
