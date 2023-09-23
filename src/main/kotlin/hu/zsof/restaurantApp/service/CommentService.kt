@@ -14,7 +14,6 @@ import java.time.Instant
 class CommentService(
         private val commentRepository: CommentRepository,
         private val placeService: PlaceService,
-        private val userService: UserService
 ) {
     fun addComment(comment: CommentData, userId: Long): Comment {
         placeService.getPlaceById(comment.placeId)
@@ -22,8 +21,7 @@ class CommentService(
                 message = comment.message,
                 createDate = Instant.now(),
                 placeId = comment.placeId,
-                userId = userId,
-                userName = userService.getUserById(userId).name
+                userId = userId
         )
         return commentRepository.save(newComment)
     }

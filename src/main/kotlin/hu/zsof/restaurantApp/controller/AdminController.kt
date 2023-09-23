@@ -4,7 +4,6 @@ import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.model.response.Response
-import hu.zsof.restaurantApp.service.PlaceService
 import hu.zsof.restaurantApp.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,7 +14,7 @@ import java.util.*
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/admin")
-class AdminController(private val placeService: PlaceService, private val userService: UserService) {
+class AdminController(private val userService: UserService) {
 
     /**
      * User controller functions

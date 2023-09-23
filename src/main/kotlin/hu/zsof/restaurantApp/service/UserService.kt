@@ -4,7 +4,6 @@ import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.repository.CommentRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
@@ -22,7 +21,6 @@ class UserService(
         private val mailService: MailService,
         private val userRepository: UserRepository,
         private val placeRepository: PlaceRepository,
-        private val commentRepository: CommentRepository
 ) {
     fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
         if (isAdmin) {
@@ -97,11 +95,6 @@ class UserService(
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.filterItems = userUpdateProfileDto.filters
 
-        val commentsByUser = commentRepository.findAllByUserId(userId)
-        commentsByUser.forEach {
-            it.userName = userUpdateProfileDto.name ?: updateUser.name
-        }
-
         //updateUser.isAdmin = false
         return userRepository.save(updateUser)
     }
@@ -154,5 +147,13 @@ class UserService(
             throw MyException("Secret is wrong", HttpStatus.BAD_REQUEST)
         }
 
+    }
+
+    fun getUserNameById(userId: Long): String {
+        val user = userRepository.findById(userId)
+
+        return if (user.isPresent) {
+            user.get().name
+        } else "Törölt felhasználó"
     }
 }

@@ -1,14 +1,15 @@
 package hu.zsof.restaurantApp.controller
 
+import hu.zsof.restaurantApp.dto.CommentDto
 import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceMapDto
 import hu.zsof.restaurantApp.model.*
 import hu.zsof.restaurantApp.model.request.CommentData
 import hu.zsof.restaurantApp.model.response.Response
-import hu.zsof.restaurantApp.security.SecurityService
 import hu.zsof.restaurantApp.service.CommentService
 import hu.zsof.restaurantApp.service.PlaceService
+import hu.zsof.restaurantApp.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -22,7 +23,7 @@ import java.util.*
 class PlaceByUserController(
         private val placeService: PlaceService,
         private val commentService: CommentService,
-        private val securityService: SecurityService
+        private val userService: UserService
 ) {
 
     /**
@@ -56,16 +57,16 @@ class PlaceByUserController(
 
     //Comments
     @GetMapping("comment/{placeId}")
-    fun getCommentsByPlaceId(@PathVariable placeId: Long): ResponseEntity<List<Comment>> {
-        return ResponseEntity(commentService.getCommentsByPlaceId(placeId), HttpStatus.OK)
+    fun getCommentsByPlaceId(@PathVariable placeId: Long): ResponseEntity<List<CommentDto>> {
+        return ResponseEntity(commentService.getCommentsByPlaceId(placeId).convertToDto(userService), HttpStatus.OK)
     }
 
     @PostMapping("comment")
     fun newPlace(
             @RequestBody commentData: CommentData,
             authentication: Authentication
-    ): ResponseEntity<Comment> {
-        return ResponseEntity(commentService.addComment(commentData, authentication.name.toLong()), HttpStatus.CREATED)
+    ): ResponseEntity<CommentDto> {
+        return ResponseEntity(commentService.addComment(commentData, authentication.name.toLong()).convertToDto(userService), HttpStatus.CREATED)
     }
 
     @DeleteMapping("comment/{id}")

@@ -4,7 +4,6 @@ import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.model.*
 import hu.zsof.restaurantApp.model.response.Response
-import hu.zsof.restaurantApp.security.SecurityService
 import hu.zsof.restaurantApp.security.SecurityService.Companion.TOKEN_NAME
 import hu.zsof.restaurantApp.service.PlaceInReviewService
 import hu.zsof.restaurantApp.service.PlaceService
@@ -21,7 +20,7 @@ import java.util.*
 class PlaceByOwnerController(
         private val placeService: PlaceService,
         private val placeInReviewService: PlaceInReviewService,
-        private val securityService: SecurityService) {
+) {
 
     /**
      * Methods that only owner and admin can use

@@ -1,5 +1,7 @@
 package hu.zsof.restaurantApp.model
 
+import hu.zsof.restaurantApp.dto.CommentDto
+import hu.zsof.restaurantApp.service.UserService
 import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -13,7 +15,25 @@ class Comment(
         val id: Long = -1,
         var message: String = "",
         var userId: Long = -1,
-        var userName: String = "",
         var createDate: Instant,
         var placeId: Long = -1
 )
+
+fun Comment.convertToDto(userService: UserService): CommentDto {
+    return CommentDto(
+            id = this.id,
+            message = message,
+            userId = userId,
+            createDate = createDate,
+            placeId = placeId,
+            userName = userService.getUserNameById(userId)
+    )
+}
+
+fun List<Comment>.convertToDto(userService: UserService): MutableList<CommentDto> {
+    val commentDtos = mutableListOf<CommentDto>()
+    this.forEach {
+        commentDtos.add(it.convertToDto(userService))
+    }
+    return commentDtos
+}

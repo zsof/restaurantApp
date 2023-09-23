@@ -4,7 +4,6 @@ import hu.zsof.restaurantApp.dto.PlaceDto
 import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.model.convertToDto
-import hu.zsof.restaurantApp.security.SecurityService
 import hu.zsof.restaurantApp.security.SecurityService.Companion.TOKEN_NAME
 import hu.zsof.restaurantApp.service.UserService
 import org.springframework.http.HttpStatus
@@ -17,7 +16,7 @@ import java.util.*
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
 @RequestMapping("/users")
-class UserController(private val userService: UserService, private val securityService: SecurityService) {
+class UserController(private val userService: UserService) {
 
     @PutMapping("profile")
     fun updateProfile(

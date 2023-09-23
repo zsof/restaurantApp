@@ -19,7 +19,7 @@ class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder
         const val ROLE_OWNER = "ROLE_OWNER"
         const val ROLE_USER = "ROLE_USER"
         const val ISSUER = "restaurant_v1"
-        const val JWT_TOKEN_VALIDITY = 1 * 60 * 60 * 1000 // 1 hour
+        const val JWT_TOKEN_VALIDITY = 1 * 60 * 10 * 1000 // 10 perc
         const val TOKEN_NAME = "Authorization"
     }
 
@@ -28,7 +28,7 @@ class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder
         val claims = JwtClaimsSet.builder()
                 .issuer(ISSUER)
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(JWT_TOKEN_VALIDITY.toLong()))
+                .expiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toLong()))
                 .subject(user.id.toString())
                 .claim(CLAIM_USERNAME, user.email)
                 .claim(CLAIM_ROLE, user.userType)
