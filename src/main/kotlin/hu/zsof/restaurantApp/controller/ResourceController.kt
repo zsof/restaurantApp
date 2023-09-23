@@ -28,11 +28,15 @@ class ResourceController(
     @PostMapping()
     fun newPlaceOrUserImage(
             @RequestParam("image") file: MultipartFile,
-            // PlaceId or UserId
+            // PlaceId or PlaceInReviewId or UserId
             @RequestParam("itemId") itemId: String,
-            // place or user
+            // Place or PlaceInReview or User
             @RequestParam("type") type: String,
+            // Previous image - must delete if there's an update
+            @RequestParam("previous-image") previousImagePath: String,
     ): ResponseEntity<*> {
+        deleteImage(previousImagePath)
+
         val typeIdLong = itemId.trim().replace("\"", "").toLongOrNull()
         val trimmedType = type.trim().replace("\"", "")
 
@@ -121,15 +125,15 @@ class ResourceController(
 
         val extension = StringUtils.getFilenameExtension(imagePath)
         val splits = imagePath.split('-')
-        val directory = splits[0]
+        val directoryName = splits[0]
         val filename = splits[1]
-        if (directory != Constants.IMAGE_USER_PATH_NAME
-                && directory != Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME
-                && directory != Constants.IMAGE_PLACE_PATH_NAME
+        if (directoryName != Constants.IMAGE_USER_PATH_NAME
+                && directoryName != Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME
+                && directoryName != Constants.IMAGE_PLACE_PATH_NAME
         ) {
             throw MyException("Directory not match", HttpStatus.BAD_REQUEST)
         }
-        val path: Path = Paths.get("images/$directory/$filename")
+        val path: Path = Paths.get("images/$directoryName/$filename")
 
         val image = File(path.toUri())
         if (!image.exists()) {
@@ -142,5 +146,18 @@ class ResourceController(
         return ResponseEntity.ok()
                 .contentType(contentType)
                 .body(urlRes)
+    }
+
+    fun deleteImage(imagePath: String?) {
+        // delete image if exists
+        if (imagePath != null && imagePath != "") {
+            val splits = imagePath.split('-')
+            val directoryName = splits[0]
+            val fileName = splits[1]
+            val imageFile = File("images/$directoryName/$fileName")
+            if (imageFile.exists()) {
+                imageFile.delete()
+            }
+        }
     }
 }
