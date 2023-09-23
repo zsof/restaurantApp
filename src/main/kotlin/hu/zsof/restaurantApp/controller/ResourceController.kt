@@ -10,7 +10,6 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -21,7 +20,11 @@ import java.nio.file.Paths
 
 @RestController
 @RequestMapping("/images")
-class ResourceController(private val placeInReviewRepository: PlaceInReviewRepository, private val userRepository: UserRepository) {
+class ResourceController(
+        private val placeInReviewRepository: PlaceInReviewRepository,
+        private val placeRepository: UserRepository,
+        private val userRepository: UserRepository
+) {
     @PostMapping()
     fun newPlaceOrUserImage(
             @RequestParam("image") file: MultipartFile,
@@ -34,7 +37,7 @@ class ResourceController(private val placeInReviewRepository: PlaceInReviewRepos
         val trimmedType = type.trim().replace("\"", "")
 
         if (typeIdLong == null) {
-            throw MyException("TypeId (User or Place) is null", HttpStatus.BAD_REQUEST)
+            throw MyException("TypeId (User, Place or PlaceInReview) is null", HttpStatus.BAD_REQUEST)
         }
 
         return try {
@@ -47,15 +50,21 @@ class ResourceController(private val placeInReviewRepository: PlaceInReviewRepos
                 directory.mkdir()
             }
 
-            if (trimmedType == "place") {
+            if (trimmedType == Constants.IMAGE_PLACE_IN_REVIEW_TYPE) {
+                imageDirectory = Constants.IMAGE_PLACE_IN_REVIEW_PATH
+                imageDirectoryName = Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME
+                val directoryPlaces = File(imageDirectory)
+                if (!directoryPlaces.exists()) {
+                    directoryPlaces.mkdir()
+                }
+            } else if (trimmedType == Constants.IMAGE_PLACE_TYPE) {
                 imageDirectory = Constants.IMAGE_PLACE_PATH
                 imageDirectoryName = Constants.IMAGE_PLACE_PATH_NAME
                 val directoryPlaces = File(imageDirectory)
                 if (!directoryPlaces.exists()) {
                     directoryPlaces.mkdir()
                 }
-
-            } else if (trimmedType == "user") {
+            } else if (trimmedType == Constants.IMAGE_USER_TYPE) {
                 imageDirectory = Constants.IMAGE_USER_PATH
                 imageDirectoryName = Constants.IMAGE_USER_PATH_NAME
                 val directoryPlaces = File(Constants.IMAGE_USER_PATH)
@@ -72,16 +81,23 @@ class ResourceController(private val placeInReviewRepository: PlaceInReviewRepos
                 imagePathToSave = "$imageDirectoryName-$newFileName.$extension"
             }
 
-            if (trimmedType == "place") {
+            if (trimmedType == Constants.IMAGE_PLACE_IN_REVIEW_TYPE) {
                 val placeinReviewOptional = placeInReviewRepository.findById(typeIdLong)
                 if (placeinReviewOptional.isPresent) {
-
                     val placeInReview = placeinReviewOptional.get()
                     placeInReview.image = imagePathToSave
                     placeInReviewRepository.save(placeInReview)
                     ResponseEntity<HttpStatus>(HttpStatus.CREATED)
                 }
-            } else if (trimmedType == "user") {
+            } else if (trimmedType == Constants.IMAGE_PLACE_TYPE) {
+                val placeOptional = placeRepository.findById(typeIdLong)
+                if (placeOptional.isPresent) {
+                    val place = placeOptional.get()
+                    place.image = imagePathToSave
+                    placeRepository.save(place)
+                    ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+                }
+            } else if (trimmedType == Constants.IMAGE_USER_TYPE) {
                 val userOptional = userRepository.findById(typeIdLong)
                 if (userOptional.isPresent) {
                     val user = userOptional.get()
@@ -92,8 +108,8 @@ class ResourceController(private val placeInReviewRepository: PlaceInReviewRepos
             }
 
             ResponseEntity<HttpStatus>(HttpStatus.OK)
-        } catch (e: DataIntegrityViolationException) { //??
-            throw MyException("Failed to add new image", HttpStatus.BAD_REQUEST) //melyik kell
+        } catch (e: DataIntegrityViolationException) {
+            throw MyException("Failed to add new image", HttpStatus.BAD_REQUEST)
             //ResponseEntity(Response(isSuccess = false, error = "Failed to add a new image"), HttpStatus.BAD_REQUEST)
         }
     }
@@ -107,7 +123,10 @@ class ResourceController(private val placeInReviewRepository: PlaceInReviewRepos
         val splits = imagePath.split('-')
         val directory = splits[0]
         val filename = splits[1]
-        if (directory != "users" && directory != "places") {
+        if (directory != Constants.IMAGE_USER_PATH_NAME
+                && directory != Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME
+                && directory != Constants.IMAGE_PLACE_PATH_NAME
+        ) {
             throw MyException("Directory not match", HttpStatus.BAD_REQUEST)
         }
         val path: Path = Paths.get("images/$directory/$filename")
