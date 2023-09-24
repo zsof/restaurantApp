@@ -57,7 +57,7 @@ class SecurityController(private val userService: UserService, private val secur
             } catch (e: DataIntegrityViolationException) {
                 throw MyException("Ez az email cím már használatban van.", HttpStatus.BAD_REQUEST)
             }
-            return ResponseEntity(Response(true, "Regisztráció sikeres!", ""), HttpStatus.CREATED)
+            return ResponseEntity(Response(true, "Regisztráció sikeres! Kérlek aktiváld fiókodat.", ""), HttpStatus.CREATED)
         } else {
             throw MyException("Az email cím vagy jelszó helytelen.", HttpStatus.BAD_REQUEST)
         }

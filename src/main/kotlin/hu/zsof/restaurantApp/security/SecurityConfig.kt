@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -25,8 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler
 import java.time.Instant
 import java.util.stream.Collectors
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 
 @Configuration
@@ -59,6 +63,15 @@ class SecurityConfig2(
                 .userDetailsService(securityUserDetailService)
                 .httpBasic(Customizer.withDefaults<HttpBasicConfigurer<HttpSecurity>>())
                 //.addFilterBefore(jwtBlackListFilter, UsernamePasswordAuthenticationFilter::class.java)
+                .oauth2Login { o ->
+                    o.failureHandler { request: HttpServletRequest, response: HttpServletResponse?, exception: AuthenticationException ->
+                        println("ouat2login")
+                        request.session.setAttribute("error.message", exception.message)
+                        val handler: AuthenticationEntryPointFailureHandler? = null
+                        assert(false)
+                        handler?.onAuthenticationFailure(request, response, exception)
+                    }
+                }
                 .build()
 
     }

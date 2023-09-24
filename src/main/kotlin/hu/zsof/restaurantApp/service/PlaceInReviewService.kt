@@ -78,9 +78,9 @@ class PlaceInReviewService(
 
     fun deletePlaceInReviewById(placeInReviewId: Long) {
         if (placeInReviewRepository.existsById(placeInReviewId)) {
-            placeInReviewRepository.deleteById(placeInReviewId)
             val placeInReview = getPlaceInReviewById(placeInReviewId)
             ResourceUtil.deleteImage(placeInReview.image)
+            placeInReviewRepository.deleteById(placeInReviewId)
         } else {
             throw MyException("Place in review not found", HttpStatus.NOT_FOUND)
         }

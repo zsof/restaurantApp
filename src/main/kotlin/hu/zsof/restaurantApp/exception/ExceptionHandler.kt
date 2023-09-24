@@ -29,7 +29,7 @@ class ExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException::class)
     fun handleUserNameNotFoundException(ex: UsernameNotFoundException): ResponseEntity<Response> {
         return ResponseEntity<Response>(
-                Response(error = "Username (email) not found. SecurityDetailService", isSuccess = false),
+                Response(error = "Username (email) not found.", isSuccess = false),
                 HttpStatus.NOT_FOUND
         )
     }

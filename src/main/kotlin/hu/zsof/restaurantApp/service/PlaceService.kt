@@ -58,9 +58,8 @@ class PlaceService(
     fun deletePlaceByIdByUser(placeId: Long, creatorId: Long) {
         val place = getPlaceById(placeId)
         if (place.creator.id == creatorId) {
-            deletePlaceById(placeId)
             ResourceUtil.deleteImage(place.image)
-
+            deletePlaceById(placeId)
         } else {
             throw MyException("User has no permission to delete this place", HttpStatus.FORBIDDEN)
         }
@@ -69,9 +68,9 @@ class PlaceService(
 
     fun deletePlaceById(id: Long) {
         if (placeRepository.existsById(id)) {
-            placeRepository.deleteById(id)
             val place = getPlaceById(id)
             ResourceUtil.deleteImage(place.image)
+            placeRepository.deleteById(id)
         } else {
             throw MyException("Place not found", HttpStatus.NOT_FOUND)
         }
