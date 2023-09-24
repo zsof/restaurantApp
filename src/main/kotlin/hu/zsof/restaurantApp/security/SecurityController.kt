@@ -37,13 +37,13 @@ class SecurityController(private val userService: UserService, private val secur
 
         val token = securityService.generateToken(user = user)
         response.addHeader(TOKEN_NAME, "Bearer $token")
-        return ResponseEntity(LoggedUserResponse(true, "", "Login Successful", user.convertToDto()), HttpStatus.OK)
+        return ResponseEntity(LoggedUserResponse(true, "", "Belépés sikeres!", user.convertToDto()), HttpStatus.OK)
     }
 
     @PostMapping("/register")
     fun register(@RequestBody loginData: LoginData, @RequestHeader isAdmin: Boolean?, @RequestHeader isOwner: Boolean?): ResponseEntity<Response> {
         if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
-            throw MyException("Email or password is empty", HttpStatus.BAD_REQUEST)
+            throw MyException("Email cím vagy jelszó üres.", HttpStatus.BAD_REQUEST)
         }
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {
             try {
@@ -55,11 +55,11 @@ class SecurityController(private val userService: UserService, private val secur
                         isOwner ?: false
                 )
             } catch (e: DataIntegrityViolationException) {
-                throw MyException("Email is already in use", HttpStatus.BAD_REQUEST)
+                throw MyException("Ez az email cím már használatban van.", HttpStatus.BAD_REQUEST)
             }
-            return ResponseEntity(Response(true, "Register Successful", ""), HttpStatus.CREATED)
+            return ResponseEntity(Response(true, "Regisztráció sikeres!", ""), HttpStatus.CREATED)
         } else {
-            throw MyException("Email or password is invalid", HttpStatus.BAD_REQUEST)
+            throw MyException("Az email cím vagy jelszó helytelen.", HttpStatus.BAD_REQUEST)
         }
     }
 
