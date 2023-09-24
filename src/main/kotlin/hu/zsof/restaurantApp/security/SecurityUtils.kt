@@ -19,7 +19,7 @@ class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder
         const val ROLE_OWNER = "ROLE_OWNER"
         const val ROLE_USER = "ROLE_USER"
         const val ISSUER = "restaurant_v1"
-        const val JWT_TOKEN_VALIDITY = 1 * 60 * 10 * 1000 // 10 perc
+        const val JWT_TOKEN_VALIDITY = 1 * 60 * 60 * 1000 // 10 perc
         const val TOKEN_NAME = "Authorization"
     }
 
