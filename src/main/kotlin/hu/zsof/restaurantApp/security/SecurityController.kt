@@ -67,8 +67,8 @@ class SecurityController(private val userService: UserService, private val secur
     fun verifyEmail(@PathVariable id: Long, @PathVariable secret: String): String {
         userService.verifyEmail(id, secret)
 
-        return " <p style='color: red;'>Sikeresen regisztráltad az email címed!</p>" +
-                "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot</a>"
+        return " <h2 style='color:DodgerBlue\n;'>Sikeresen regisztráltad az email címed!</h2>" +
+                "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot.</a>"
 
         // real:
         //return ResponseEntity(Response(true, "VERIFICATION_SUCCESS", ""), HttpStatus.OK)

@@ -5,6 +5,7 @@ import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.util.Constants
+import hu.zsof.restaurantApp.util.ResourceUtil
 import net.bytebuddy.utility.RandomString
 import org.springframework.core.io.UrlResource
 import org.springframework.dao.DataIntegrityViolationException
@@ -36,7 +37,7 @@ class ResourceController(
             // Previous image - must delete if there's an update
             @RequestParam("previous-image") previousImagePath: String?,
     ): ResponseEntity<*> {
-        deleteImage(previousImagePath)
+        ResourceUtil.deleteImage(previousImagePath)
         println("after delete")
 
         val typeIdLong = itemId.trim().replace("\"", "").toLongOrNull()
@@ -141,18 +142,5 @@ class ResourceController(
         return ResponseEntity.ok()
                 .contentType(contentType)
                 .body(urlRes)
-    }
-
-    fun deleteImage(imagePath: String?) {
-        // delete image if exists
-        if (imagePath != null && imagePath != "") {
-            val splits = imagePath.split('-')
-            val directoryName = splits[0]
-            val fileName = splits[1]
-            val imageFile = File("images/$directoryName/$fileName")
-            if (imageFile.exists()) {
-                imageFile.delete()
-            }
-        }
     }
 }

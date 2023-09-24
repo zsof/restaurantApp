@@ -3,15 +3,17 @@ package hu.zsof.restaurantApp.service
 import hu.zsof.restaurantApp.dto.FilterDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
+import hu.zsof.restaurantApp.util.ResourceUtil
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class PlaceService(private val placeRepository: PlaceRepository, private val placeInReviewRepository: PlaceInReviewRepository) {
+class PlaceService(
+        private val placeRepository: PlaceRepository
+) {
     fun savePlace(newPlace: Place): Place {
         val theNewPlace = Place(
                 name = newPlace.name,
@@ -55,9 +57,10 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
 
     fun deletePlaceByIdByUser(placeId: Long, creatorId: Long) {
         val place = getPlaceById(placeId)
-
         if (place.creator.id == creatorId) {
             deletePlaceById(placeId)
+            ResourceUtil.deleteImage(place.image)
+
         } else {
             throw MyException("User has no permission to delete this place", HttpStatus.FORBIDDEN)
         }
@@ -67,6 +70,8 @@ class PlaceService(private val placeRepository: PlaceRepository, private val pla
     fun deletePlaceById(id: Long) {
         if (placeRepository.existsById(id)) {
             placeRepository.deleteById(id)
+            val place = getPlaceById(id)
+            ResourceUtil.deleteImage(place.image)
         } else {
             throw MyException("Place not found", HttpStatus.NOT_FOUND)
         }

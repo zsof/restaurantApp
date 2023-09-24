@@ -6,6 +6,7 @@ import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.model.PlaceInReview
 import hu.zsof.restaurantApp.repository.PlaceInReviewRepository
 import hu.zsof.restaurantApp.repository.PlaceRepository
+import hu.zsof.restaurantApp.util.ResourceUtil
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -78,6 +79,8 @@ class PlaceInReviewService(
     fun deletePlaceInReviewById(placeInReviewId: Long) {
         if (placeInReviewRepository.existsById(placeInReviewId)) {
             placeInReviewRepository.deleteById(placeInReviewId)
+            val placeInReview = getPlaceInReviewById(placeInReviewId)
+            ResourceUtil.deleteImage(placeInReview.image)
         } else {
             throw MyException("Place in review not found", HttpStatus.NOT_FOUND)
         }
