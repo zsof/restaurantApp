@@ -79,7 +79,6 @@ class PlaceService(
     fun filterPlaces(filterItems: FilterDto): MutableList<Place> {
         val getAllFilteredPlace = getAllPlace().filter { restaurantList ->
             filterItems.filter.convertToList().compare(restaurantList.filter.convertToList())
-            // todo ide nem lehet ? -> filterItems.type== restaurantList.type
         }.toMutableList()
 
         val getAllPriceFilteredPlace = if (filterItems.price == null) {

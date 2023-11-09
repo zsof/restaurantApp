@@ -38,7 +38,6 @@ class ResourceController(
             @RequestParam("previous-image") previousImagePath: String?,
     ): ResponseEntity<*> {
         ResourceUtil.deleteImage(previousImagePath)
-        println("after delete")
 
         val typeIdLong = itemId.trim().replace("\"", "").toLongOrNull()
         val trimmedType = type.trim().replace("\"", "")
@@ -110,7 +109,6 @@ class ResourceController(
             ResponseEntity<HttpStatus>(HttpStatus.OK)
         } catch (e: DataIntegrityViolationException) {
             throw MyException("Failed to add new image", HttpStatus.BAD_REQUEST)
-            //ResponseEntity(Response(isSuccess = false, error = "Failed to add a new image"), HttpStatus.BAD_REQUEST)
         }
     }
 

@@ -62,7 +62,7 @@ class PlaceByUserController(
     }
 
     @PostMapping("comment")
-    fun newPlace(
+    fun newComment(
             @RequestBody commentData: CommentData,
             authentication: Authentication
     ): ResponseEntity<CommentDto> {

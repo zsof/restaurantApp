@@ -7,7 +7,6 @@ import hu.zsof.restaurantApp.repository.CommentRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Instant
 
 @Service
 @Transactional
@@ -19,7 +18,6 @@ class CommentService(
         placeService.getPlaceById(comment.placeId)
         val newComment = Comment(
                 message = comment.message,
-                createDate = Instant.now(),
                 placeId = comment.placeId,
                 userId = userId
         )
