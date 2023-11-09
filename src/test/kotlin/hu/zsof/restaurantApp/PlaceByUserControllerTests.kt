@@ -177,7 +177,7 @@ class PlaceByUserControllerTests {
     fun testDeleteCommentByID() {
         // Arrange
         doNothing().`when`(commentRepository).deleteById(anyLong())
-        `when`(commentRepository.existsById(anyLong())).thenReturn((true))
+        `when`(commentRepository.existsById(anyLong())).thenReturn(true)
 
         // Act
         val response = controller.deleteCommentById(1)

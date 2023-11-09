@@ -77,13 +77,23 @@ class PlaceInReviewService(
         }
     }
 
-    fun deletePlaceInReviewById(placeInReviewId: Long) {
-        if (placeInReviewRepository.existsById(placeInReviewId)) {
-            val placeInReview = getPlaceInReviewById(placeInReviewId)
+    fun deletePlaceInReviewByIdByUser(placeInReviewId: Long, creatorId: Long) {
+        val placeInReview = getPlaceInReviewById(placeInReviewId)
+        if (placeInReview.user.id == creatorId) {
             ResourceUtil.deleteImage(placeInReview.image)
-            placeInReviewRepository.deleteById(placeInReviewId)
+            deletePlaceInReviewById(placeInReviewId)
         } else {
-            throw MyException("Place in review not found", HttpStatus.NOT_FOUND)
+            throw MyException("User has no permission to delete this place", HttpStatus.FORBIDDEN)
+        }
+    }
+
+    fun deletePlaceInReviewById(id: Long) {
+        if (placeInReviewRepository.existsById(id)) {
+            val placeInReview = getPlaceInReviewById(id)
+            ResourceUtil.deleteImage(placeInReview.image)
+            placeInReviewRepository.deleteById(id)
+        } else {
+            throw MyException("Place in Review not found", HttpStatus.NOT_FOUND)
         }
     }
 
