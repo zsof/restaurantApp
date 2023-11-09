@@ -5,7 +5,7 @@ import hu.zsof.restaurantApp.model.enum.Price
 import hu.zsof.restaurantApp.model.enum.Type
 
 class FilterDto(
-        var filter: Filter = Filter(),
-        var type: Type? = null,
-        val price: Price? = null
+    var filter: Filter = Filter(),
+    var type: Type? = null,
+    val price: Price? = null,
 )

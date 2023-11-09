@@ -45,7 +45,7 @@ object AuthUtils {
         }
     }
 
-    fun comparePassword(password: String, encodedPassword: String): Boolean{
+    fun comparePassword(password: String, encodedPassword: String): Boolean {
         return BCryptPasswordEncoder().matches(password, encodedPassword)
     }
 }

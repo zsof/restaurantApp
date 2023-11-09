@@ -21,16 +21,16 @@ class ExceptionHandler {
     fun handleUnexpectedErrorException(ex: Exception): ResponseEntity<Response> {
         ex.printStackTrace()
         return ResponseEntity<Response>(
-                Response(error = ex.message.toString(), isSuccess = false),
-                HttpStatus.INTERNAL_SERVER_ERROR
+            Response(error = ex.message.toString(), isSuccess = false),
+            HttpStatus.INTERNAL_SERVER_ERROR,
         )
     }
 
     @ExceptionHandler(UsernameNotFoundException::class)
     fun handleUserNameNotFoundException(ex: UsernameNotFoundException): ResponseEntity<Response> {
         return ResponseEntity<Response>(
-                Response(error = "Username (email) not found.", isSuccess = false),
-                HttpStatus.NOT_FOUND
+            Response(error = "Username (email) not found.", isSuccess = false),
+            HttpStatus.NOT_FOUND,
         )
     }
 
@@ -38,6 +38,8 @@ class ExceptionHandler {
     fun handleDataIntegrityException(ex: DataIntegrityViolationException): ResponseEntity<Response> {
         val message = NestedExceptionUtils.getMostSpecificCause(ex).message.toString()
         return ResponseEntity<Response>(
-                Response(error = message, isSuccess = false), HttpStatus.CONFLICT)
+            Response(error = message, isSuccess = false),
+            HttpStatus.CONFLICT,
+        )
     }
 }

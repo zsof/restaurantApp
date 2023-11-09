@@ -21,9 +21,9 @@ import java.util.*
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER') or hasRole('ROLE_USER')")
 @RequestMapping("/places")
 class PlaceByUserController(
-        private val placeService: PlaceService,
-        private val commentService: CommentService,
-        private val userService: UserService
+    private val placeService: PlaceService,
+    private val commentService: CommentService,
+    private val userService: UserService,
 ) {
 
     /**
@@ -49,13 +49,13 @@ class PlaceByUserController(
 
     @PostMapping("filter")
     fun filterPlace(
-            @RequestBody filters: FilterDto,
+        @RequestBody filters: FilterDto,
     ): ResponseEntity<List<PlaceDto>> {
         val filteredPlaces: MutableList<Place> = placeService.filterPlaces(filters)
         return ResponseEntity(filteredPlaces.convertToDto(), HttpStatus.OK)
     }
 
-    //Comments
+    // Comments
     @GetMapping("comment/{placeId}")
     fun getCommentsByPlaceId(@PathVariable placeId: Long): ResponseEntity<List<CommentDto>> {
         return ResponseEntity(commentService.getCommentsByPlaceId(placeId).convertToDto(userService), HttpStatus.OK)
@@ -63,15 +63,15 @@ class PlaceByUserController(
 
     @PostMapping("comment")
     fun newComment(
-            @RequestBody commentData: CommentData,
-            authentication: Authentication
+        @RequestBody commentData: CommentData,
+        authentication: Authentication,
     ): ResponseEntity<CommentDto> {
         return ResponseEntity(commentService.addComment(commentData, authentication.name.toLong()).convertToDto(userService), HttpStatus.CREATED)
     }
 
     @DeleteMapping("comment/{id}")
     fun deleteCommentById(
-            @PathVariable id: Long,
+        @PathVariable id: Long,
     ): ResponseEntity<Response> {
         commentService.deleteCommentById(id)
         return ResponseEntity(Response(true), HttpStatus.OK)

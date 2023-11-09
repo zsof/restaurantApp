@@ -20,38 +20,40 @@ class UserController(private val userService: UserService) {
 
     @PutMapping("profile")
     fun updateProfile(
-            @RequestBody userUpdateProfileDto: UserUpdateProfileDto,
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestBody userUpdateProfileDto: UserUpdateProfileDto,
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<UserDto> {
-        return ResponseEntity(userService.updateProfile(
+        return ResponseEntity(
+            userService.updateProfile(
                 authentication.name.toLong(),
-                userUpdateProfileDto).convertToDto(),
-                HttpStatus.OK
+                userUpdateProfileDto,
+            ).convertToDto(),
+            HttpStatus.OK,
         )
     }
 
     @GetMapping("profile")
     fun getUserProfile(
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<UserDto> {
         return ResponseEntity(userService.getUserById(authentication.name.toLong()).convertToDto(), HttpStatus.OK)
     }
 
     @PostMapping("fav-places/{placeId}")
     fun addFavPlaceForUser(
-            @PathVariable placeId: Long,
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @PathVariable placeId: Long,
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<UserDto> {
         return ResponseEntity<UserDto>(userService.addFavPlace(authentication.name.toLong(), placeId).convertToDto(), HttpStatus.OK)
     }
 
     @GetMapping("fav-places")
     fun getUserFavPlaces(
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<List<PlaceDto>> {
         return ResponseEntity<List<PlaceDto>>(userService.getFavPlaces(authentication.name.toLong()).convertToDto(), HttpStatus.OK)
     }

@@ -14,40 +14,41 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class PlaceInReviewService(
-        private val placeInReviewRepository: PlaceInReviewRepository,
-        private val placeService: PlaceService,
-        private val placeRepository: PlaceRepository
+    private val placeInReviewRepository: PlaceInReviewRepository,
+    private val placeService: PlaceService,
+    private val placeRepository: PlaceRepository,
 ) {
 
-    //When owner add and save a new place
+    // When owner add and save a new place
     fun savePlaceInReview(newPlace: PlaceInReview, userId: Long): PlaceInReview {
-        val theNewPlace = PlaceInReview(name = newPlace.name,
-                address = newPlace.address,
-                type = newPlace.type,
-                price = newPlace.price,
-                image = newPlace.image,
-                filter = newPlace.filter,
-                phoneNumber = newPlace.phoneNumber,
-                email = newPlace.email,
-                web = newPlace.web,
-                latitude = newPlace.latitude,
-                longitude = newPlace.longitude,
-                openDetails = newPlace.openDetails,
-                rate = newPlace.rate,
-                usersNumber = 0,
-                user = MyUser(userId),
-                problem = null
+        val theNewPlace = PlaceInReview(
+            name = newPlace.name,
+            address = newPlace.address,
+            type = newPlace.type,
+            price = newPlace.price,
+            image = newPlace.image,
+            filter = newPlace.filter,
+            phoneNumber = newPlace.phoneNumber,
+            email = newPlace.email,
+            web = newPlace.web,
+            latitude = newPlace.latitude,
+            longitude = newPlace.longitude,
+            openDetails = newPlace.openDetails,
+            rate = newPlace.rate,
+            usersNumber = 0,
+            user = MyUser(userId),
+            problem = null,
         )
         return placeInReviewRepository.save(theNewPlace)
     }
 
-    //For admin
+    // For admin
     fun getAllPlaceInReview(): MutableList<PlaceInReview> = placeInReviewRepository.findAll()
 
-    //From Place get modified places by owner -owner has to accept/report, but it must have nin the Place list, cannot delete from it
+    // From Place get modified places by owner -owner has to accept/report, but it must have nin the Place list, cannot delete from it
     fun getModifiedPlaces(): MutableList<Place> = placeRepository.findAll().filter { it.isModified }.toMutableList()
 
-    //For owner
+    // For owner
     fun getAllPlaceInReviewByOwner(creatorId: Long): MutableList<PlaceInReview> {
         val ownerPlaces = mutableListOf<PlaceInReview>()
         placeInReviewRepository.findAll().forEach {
@@ -101,18 +102,16 @@ class PlaceInReviewService(
         }
     }
 
-
     fun acceptPlace(placeId: Long, isModifiedPlace: Boolean = false) {
         if (isModifiedPlace.not()) {
             val placeInReview = getPlaceInReviewById(placeId)
-            //Add to Place table
+            // Add to Place table
             placeService.savePlace(placeInReview.convertToPlace())
 
-            //Delete from PlaceInReview table
+            // Delete from PlaceInReview table
             deletePlaceInReviewById(placeId)
-
         } else {
-            //If the place was modified and accept
+            // If the place was modified and accept
             val modifiedPlace = getModifiedPlaceById(placeId)
             modifiedPlace.isModified = false
             modifiedPlace.isVisible = true

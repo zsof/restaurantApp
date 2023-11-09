@@ -29,41 +29,39 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import java.time.Instant
 import java.util.stream.Collectors
 
-
 @Configuration
 @EnableWebSecurity(debug = false)
 @EnableMethodSecurity
 class SecurityConfig2(
-        private val securityUserDetailService: UserSecurityDetailService,
-        private val configurationProperties: ConfigurationProperties
+    private val securityUserDetailService: UserSecurityDetailService,
+    private val configurationProperties: ConfigurationProperties,
 ) {
 
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
         return http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/images/**").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/v2/api-docs").permitAll() // for swagger
-                .antMatchers("/swagger-resources/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .oauth2ResourceServer { httpSecurityOAuth2ResourceServerConfigurer: OAuth2ResourceServerConfigurer<HttpSecurity?> ->
-                    httpSecurityOAuth2ResourceServerConfigurer.jwt()
-                            .jwtAuthenticationConverter(jwtAuthConverter())
-                }
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .userDetailsService(securityUserDetailService)
-                .httpBasic(Customizer.withDefaults<HttpBasicConfigurer<HttpSecurity>>())
-                .exceptionHandling { e ->
-                    e.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.I_AM_A_TEAPOT))
-                }
-                .build()
-
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/auth/**").permitAll()
+            .antMatchers("/images/**").permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/v2/api-docs").permitAll() // for swagger
+            .antMatchers("/swagger-resources/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .oauth2ResourceServer { httpSecurityOAuth2ResourceServerConfigurer: OAuth2ResourceServerConfigurer<HttpSecurity?> ->
+                httpSecurityOAuth2ResourceServerConfigurer.jwt()
+                    .jwtAuthenticationConverter(jwtAuthConverter())
+            }
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .userDetailsService(securityUserDetailService)
+            .httpBasic(Customizer.withDefaults<HttpBasicConfigurer<HttpSecurity>>())
+            .exceptionHandling { e ->
+                e.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.I_AM_A_TEAPOT))
+            }
+            .build()
     }
 
     @Bean
@@ -90,7 +88,6 @@ class SecurityConfig2(
     fun passwordEncoder(): PasswordEncoder? {
         return BCryptPasswordEncoder()
     }
-
 }
 
 class JwtRoleConverter : Converter<Jwt?, Collection<GrantedAuthority?>?> {

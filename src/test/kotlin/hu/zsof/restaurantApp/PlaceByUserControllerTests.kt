@@ -51,27 +51,26 @@ class PlaceByUserControllerTests {
     fun setUp() {
         placeService = PlaceService(placeRepository = placeRepository)
         val userService = UserService(
-                userRepository = userRepository,
-                placeRepository = placeRepository,
-                mailService = mailService,
+            userRepository = userRepository,
+            placeRepository = placeRepository,
+            mailService = mailService,
         )
         val commentService = CommentService(
-                commentRepository = commentRepository,
-                placeService = placeService,
+            commentRepository = commentRepository,
+            placeService = placeService,
         )
 
         controller = PlaceByUserController(
-                placeService = placeService,
-                userService = userService,
-                commentService = commentService,
+            placeService = placeService,
+            userService = userService,
+            commentService = commentService,
         )
 
         authentication = JwtAuthenticationToken(
-                mock(Jwt::class.java),
-                listOf(mock(SimpleGrantedAuthority::class.java)),
-                "1"
+            mock(Jwt::class.java),
+            listOf(mock(SimpleGrantedAuthority::class.java)),
+            "1",
         )
-
     }
 
     @Test
@@ -92,10 +91,10 @@ class PlaceByUserControllerTests {
     fun testGetAllPlace() {
         // Arrange
         `when`(placeRepository.findAll()).thenReturn(
-                listOf(
-                        Place(id = 1, name = "Alma Fagyizó"),
-                        Place(id = 2, name = "Körte Étterem")
-                )
+            listOf(
+                Place(id = 1, name = "Alma Fagyizó"),
+                Place(id = 2, name = "Körte Étterem"),
+            ),
         )
 
         // Act
@@ -111,10 +110,10 @@ class PlaceByUserControllerTests {
     fun testGetAllPlaceInMap() {
         // Arrange
         `when`(placeRepository.findAll()).thenReturn(
-                listOf(
-                        Place(id = 1, name = "Alma Fagyizó"),
-                        Place(id = 2, name = "Körte Étterem")
-                )
+            listOf(
+                Place(id = 1, name = "Alma Fagyizó"),
+                Place(id = 2, name = "Körte Étterem"),
+            ),
         )
 
         // Act
@@ -144,10 +143,10 @@ class PlaceByUserControllerTests {
     fun testGetCommentsByPlaceId() {
         // Arrange
         `when`(commentRepository.findAllByPlaceId(placeId = 1)).thenReturn(
-                listOf(
-                        Comment(id = 1, message = "Jó hely!", placeId = 1),
-                        Comment(id = 2, message = "Szuper", placeId = 1),
-                )
+            listOf(
+                Comment(id = 1, message = "Jó hely!", placeId = 1),
+                Comment(id = 2, message = "Szuper", placeId = 1),
+            ),
         )
 
         // Act

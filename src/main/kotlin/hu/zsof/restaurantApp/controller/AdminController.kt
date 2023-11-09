@@ -21,14 +21,14 @@ class AdminController(private val userService: UserService) {
      */
     @GetMapping("users/{id}")
     fun getUserById(
-            @PathVariable id: Long,
+        @PathVariable id: Long,
     ): ResponseEntity<UserDto?> {
         return ResponseEntity(userService.getUserById(id).convertToDto(), HttpStatus.OK)
     }
 
     @DeleteMapping("users/{id}")
     fun deleteUserById(
-            @PathVariable id: Long,
+        @PathVariable id: Long,
     ): ResponseEntity<Response> {
         userService.deleteUserById(id)
         return ResponseEntity(Response(true), HttpStatus.OK)

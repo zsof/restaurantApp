@@ -23,8 +23,8 @@ class SecurityController(private val userService: UserService, private val secur
 
     @GetMapping
     fun authorize(
-            @RequestHeader(TOKEN_NAME) token: String,
-            response: HttpServletResponse
+        @RequestHeader(TOKEN_NAME) token: String,
+        response: HttpServletResponse,
     ): ResponseEntity<LoggedUserResponse> {
         val verification = securityService.verifyToken(token)
         val user = userService.getUserById(verification.userId)
@@ -48,11 +48,13 @@ class SecurityController(private val userService: UserService, private val secur
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {
             try {
                 userService.createUser(
-                        MyUser(
-                                email = loginData.email, password = AuthUtils.passwordEncoder.encode(loginData.password), name = loginData.name
-                        ),
-                        isAdmin ?: false,
-                        isOwner ?: false
+                    MyUser(
+                        email = loginData.email,
+                        password = AuthUtils.passwordEncoder.encode(loginData.password),
+                        name = loginData.name,
+                    ),
+                    isAdmin ?: false,
+                    isOwner ?: false,
                 )
             } catch (e: DataIntegrityViolationException) {
                 throw MyException("Ez az email cím már használatban van.", HttpStatus.BAD_REQUEST)
@@ -68,10 +70,9 @@ class SecurityController(private val userService: UserService, private val secur
         userService.verifyEmail(id, secret)
 
         return " <h2 style='color:DodgerBlue\n;'>Sikeresen regisztráltad az email címed!</h2>" +
-                "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot.</a>"
+            "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot.</a>"
 
         // real:
-        //return ResponseEntity(Response(true, "VERIFICATION_SUCCESS", ""), HttpStatus.OK)
+        // return ResponseEntity(Response(true, "VERIFICATION_SUCCESS", ""), HttpStatus.OK)
     }
-
 }

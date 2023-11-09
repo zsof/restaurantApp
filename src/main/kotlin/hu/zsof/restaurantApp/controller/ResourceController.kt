@@ -23,19 +23,19 @@ import java.nio.file.Paths
 @RestController
 @RequestMapping("/images")
 class ResourceController(
-        private val placeInReviewRepository: PlaceInReviewRepository,
-        private val placeRepository: PlaceRepository,
-        private val userRepository: UserRepository
+    private val placeInReviewRepository: PlaceInReviewRepository,
+    private val placeRepository: PlaceRepository,
+    private val userRepository: UserRepository,
 ) {
     @PostMapping()
     fun newPlaceOrUserImage(
-            @RequestParam("image") file: MultipartFile,
-            // PlaceId or PlaceInReviewId or UserId
-            @RequestParam("itemId") itemId: String,
-            // Place or PlaceInReview or User
-            @RequestParam("type") type: String,
-            // Previous image - must delete if there's an update
-            @RequestParam("previous-image") previousImagePath: String?,
+        @RequestParam("image") file: MultipartFile,
+        // PlaceId or PlaceInReviewId or UserId
+        @RequestParam("itemId") itemId: String,
+        // Place or PlaceInReview or User
+        @RequestParam("type") type: String,
+        // Previous image - must delete if there's an update
+        @RequestParam("previous-image") previousImagePath: String?,
     ): ResponseEntity<*> {
         ResourceUtil.deleteImage(previousImagePath)
 
@@ -114,16 +114,16 @@ class ResourceController(
 
     @GetMapping()
     fun getResource(
-            @RequestParam("image") imagePath: String,
+        @RequestParam("image") imagePath: String,
     ): ResponseEntity<*> { // UrlResource + HttpStatus
 
         val extension = StringUtils.getFilenameExtension(imagePath)
         val splits = imagePath.split('-')
         val directoryName = splits[0]
         val filename = splits[1]
-        if (directoryName != Constants.IMAGE_USER_PATH_NAME
-                && directoryName != Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME
-                && directoryName != Constants.IMAGE_PLACE_PATH_NAME
+        if (directoryName != Constants.IMAGE_USER_PATH_NAME &&
+            directoryName != Constants.IMAGE_PLACE_IN_REVIEW_PATH_NAME &&
+            directoryName != Constants.IMAGE_PLACE_PATH_NAME
         ) {
             throw MyException("Directory not match", HttpStatus.BAD_REQUEST)
         }
@@ -138,7 +138,7 @@ class ResourceController(
         val contentType: MediaType = if (extension == "jpg") MediaType.IMAGE_JPEG else MediaType.IMAGE_PNG
 
         return ResponseEntity.ok()
-                .contentType(contentType)
-                .body(urlRes)
+            .contentType(contentType)
+            .body(urlRes)
     }
 }

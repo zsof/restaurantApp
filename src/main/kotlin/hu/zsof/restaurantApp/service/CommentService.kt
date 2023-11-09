@@ -11,15 +11,15 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class CommentService(
-        private val commentRepository: CommentRepository,
-        private val placeService: PlaceService,
+    private val commentRepository: CommentRepository,
+    private val placeService: PlaceService,
 ) {
     fun addComment(comment: CommentData, userId: Long): Comment {
         placeService.getPlaceById(comment.placeId)
         val newComment = Comment(
-                message = comment.message,
-                placeId = comment.placeId,
-                userId = userId
+            message = comment.message,
+            placeId = comment.placeId,
+            userId = userId,
         )
         return commentRepository.save(newComment)
     }

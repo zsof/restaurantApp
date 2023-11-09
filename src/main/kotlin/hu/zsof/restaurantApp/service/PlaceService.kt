@@ -12,25 +12,25 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class PlaceService(
-        private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
 ) {
     fun savePlace(newPlace: Place): Place {
         val theNewPlace = Place(
-                name = newPlace.name,
-                address = newPlace.address,
-                type = newPlace.type,
-                price = newPlace.price,
-                image = newPlace.image,
-                filter = newPlace.filter,
-                phoneNumber = newPlace.phoneNumber,
-                email = newPlace.email,
-                web = newPlace.web,
-                latitude = newPlace.latitude,
-                longitude = newPlace.longitude,
-                openDetails = newPlace.openDetails,
-                rate = newPlace.rate,
-                usersNumber = 0,
-                creator = newPlace.creator
+            name = newPlace.name,
+            address = newPlace.address,
+            type = newPlace.type,
+            price = newPlace.price,
+            image = newPlace.image,
+            filter = newPlace.filter,
+            phoneNumber = newPlace.phoneNumber,
+            email = newPlace.email,
+            web = newPlace.web,
+            latitude = newPlace.latitude,
+            longitude = newPlace.longitude,
+            openDetails = newPlace.openDetails,
+            rate = newPlace.rate,
+            usersNumber = 0,
+            creator = newPlace.creator,
         )
         return placeRepository.save(theNewPlace)
     }
@@ -65,7 +65,6 @@ class PlaceService(
         }
     }
 
-
     fun deletePlaceById(id: Long) {
         if (placeRepository.existsById(id)) {
             val place = getPlaceById(id)
@@ -98,7 +97,6 @@ class PlaceService(
         }
     }
 
-
     fun updatePlace(place: Place, creatorId: Long): Place {
         val placeOptional = placeRepository.findById(place.id)
         if (!placeOptional.isPresent) {
@@ -106,7 +104,6 @@ class PlaceService(
         }
         val updatedPlace = placeOptional.get()
         if (updatedPlace.creator.id == creatorId) {
-
             // Update place table with changes
             updatedPlace.name = place.name
             updatedPlace.address = place.address
@@ -121,7 +118,7 @@ class PlaceService(
             updatedPlace.longitude = place.longitude
             updatedPlace.openDetails = place.openDetails
 
-            //These data can not change by update the place
+            // These data can not change by update the place
             updatedPlace.rate = updatedPlace.rate
             updatedPlace.usersNumber = updatedPlace.usersNumber
             updatedPlace.creator = updatedPlace.creator
@@ -129,10 +126,8 @@ class PlaceService(
             updatedPlace.isModified = true
             updatedPlace.isVisible = updatedPlace.isVisible
 
-
-            //Save place from
+            // Save place from
             return placeRepository.save(updatedPlace)
-
         } else {
             throw MyException("User has no permission to update this place", HttpStatus.BAD_REQUEST)
         }

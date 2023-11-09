@@ -9,21 +9,21 @@ import javax.persistence.Id
 
 @Entity
 class Comment(
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = -1,
-        var message: String = "",
-        var userId: Long = -1,
-        var placeId: Long = -1
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = -1,
+    var message: String = "",
+    var userId: Long = -1,
+    var placeId: Long = -1,
 )
 
 fun Comment.convertToDto(userService: UserService): CommentDto {
     return CommentDto(
-            id = this.id,
-            message = message,
-            userId = userId,
-            placeId = placeId,
-            userName = userService.getUserNameById(userId)
+        id = this.id,
+        message = message,
+        userId = userId,
+        placeId = placeId,
+        userName = userService.getUserNameById(userId),
     )
 }
 

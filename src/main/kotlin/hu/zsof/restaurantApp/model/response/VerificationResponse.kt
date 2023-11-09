@@ -4,5 +4,5 @@ class VerificationResponse(
     val verified: Boolean = false,
     val isAdmin: Boolean = false,
     val errorMessage: String = "",
-    val userId: Long = -1
+    val userId: Long = -1,
 )

@@ -18,9 +18,9 @@ import java.util.*
 @Service
 @Transactional
 class UserService(
-        private val mailService: MailService,
-        private val userRepository: UserRepository,
-        private val placeRepository: PlaceRepository,
+    private val mailService: MailService,
+    private val userRepository: UserRepository,
+    private val placeRepository: PlaceRepository,
 ) {
     fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
         if (isAdmin) {
@@ -56,11 +56,9 @@ class UserService(
         } else {
             throw MyException("User not found", HttpStatus.NOT_FOUND)
         }
-
     }
 
     fun deleteUserById(id: Long) {
-
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id)
         } else {
@@ -95,7 +93,7 @@ class UserService(
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.filterItems = userUpdateProfileDto.filters
 
-        //updateUser.isAdmin = false
+        // updateUser.isAdmin = false
         return userRepository.save(updateUser)
     }
 
@@ -122,7 +120,6 @@ class UserService(
         placeRepository.save(place)
 
         return userRepository.save(user)
-
     }
 
     fun getFavPlaces(userId: Long): MutableList<Place> {
@@ -137,7 +134,6 @@ class UserService(
         return placeRepository.findAllById(userFavPlaceIds)
     }
 
-
     fun verifyEmail(id: Long, secret: String) {
         val user = getUserById(id)
         if (user.verificationSecret == secret) {
@@ -146,7 +142,6 @@ class UserService(
         } else {
             throw MyException("Secret is wrong", HttpStatus.BAD_REQUEST)
         }
-
     }
 
     fun getUserNameById(userId: Long): String {
@@ -154,6 +149,8 @@ class UserService(
 
         return if (user.isPresent) {
             user.get().name
-        } else "Törölt felhasználó"
+        } else {
+            "Törölt felhasználó"
+        }
     }
 }

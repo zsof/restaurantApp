@@ -9,63 +9,63 @@ import javax.persistence.*
 @Entity
 class Place(
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(nullable = false, updatable = false, name = "place_id")
-        val id: Long = 0,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false, name = "place_id")
+    val id: Long = 0,
 
-        var name: String = "",
+    var name: String = "",
 
-        var address: String = "",
-        var rate: Float? = 2.0f,
-        var ratedUsersNum: Int? = null,
-        var price: Price = Price.LOW,
-        var image: String? = null,
-        var phoneNumber: String? = null,
-        var email: String? = null,
-        var web: String? = null,
-        var latitude: Double = 0.0,
-        var longitude: Double = 0.0,
-        var usersNumber: Int = 0,
+    var address: String = "",
+    var rate: Float? = 2.0f,
+    var ratedUsersNum: Int? = null,
+    var price: Price = Price.LOW,
+    var image: String? = null,
+    var phoneNumber: String? = null,
+    var email: String? = null,
+    var web: String? = null,
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0,
+    var usersNumber: Int = 0,
 
-        var isModified: Boolean = false,
-        var isVisible: Boolean = true,
-        var problem: String? = null,
+    var isModified: Boolean = false,
+    var isVisible: Boolean = true,
+    var problem: String? = null,
 
-        var type: Type = Type.RESTAURANT,
+    var type: Type = Type.RESTAURANT,
 
-        // Sok place-je lehet egy usernek -> MyUser táblában meg @OneToMany kell
-        @ManyToOne
-        var creator: MyUser = MyUser(),
+    // Sok place-je lehet egy usernek -> MyUser táblában meg @OneToMany kell
+    @ManyToOne
+    var creator: MyUser = MyUser(),
 
-        @Embedded
-        var filter: Filter = Filter(),
-        @Embedded
-        var openDetails: OpenDetails = OpenDetails()
+    @Embedded
+    var filter: Filter = Filter(),
+    @Embedded
+    var openDetails: OpenDetails = OpenDetails(),
 )
 
 fun Place.convertToDto(): PlaceDto {
     return PlaceDto(
-            id = this.id,
-            name = this.name,
-            address = this.address,
-            rate = this.rate,
-            ratedUsersNum = this.ratedUsersNum,
-            price = this.price,
-            image = this.image,
-            type = this.type,
-            filter = this.filter,
-            openDetails = this.openDetails,
-            phoneNumber = this.phoneNumber,
-            email = this.email,
-            web = this.web,
-            usersNumber = this.usersNumber,
-            creatorName = this.creator.name,
-            creatorId = this.creator.id,
-            latitude = this.latitude,
-            longitude = this.longitude,
-            isModified = this.isModified,
-            problem = this.problem
+        id = this.id,
+        name = this.name,
+        address = this.address,
+        rate = this.rate,
+        ratedUsersNum = this.ratedUsersNum,
+        price = this.price,
+        image = this.image,
+        type = this.type,
+        filter = this.filter,
+        openDetails = this.openDetails,
+        phoneNumber = this.phoneNumber,
+        email = this.email,
+        web = this.web,
+        usersNumber = this.usersNumber,
+        creatorName = this.creator.name,
+        creatorId = this.creator.id,
+        latitude = this.latitude,
+        longitude = this.longitude,
+        isModified = this.isModified,
+        problem = this.problem,
     )
 }
 
@@ -79,12 +79,12 @@ fun MutableList<Place>.convertToDto(): MutableList<PlaceDto> {
 
 fun Place.convertToPlaceMapDto(): PlaceMapDto {
     return PlaceMapDto(
-            this.id,
-            this.name,
-            this.address,
-            this.latitude,
-            this.longitude,
-            this.filter
+        this.id,
+        this.name,
+        this.address,
+        this.latitude,
+        this.longitude,
+        this.filter,
     )
 }
 

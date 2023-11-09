@@ -27,7 +27,7 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
     }
 
-    //Get the modified items from Place table
+    // Get the modified items from Place table
     @GetMapping("places/modified")
     fun getModifiedPlaces(): ResponseEntity<List<PlaceDto>> {
         val modifiedPlaces: MutableList<Place> = placeInReviewService.getModifiedPlaces()
@@ -36,20 +36,19 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
 
     @PostMapping("accept/{placeId}")
     fun acceptPlace(
-            @PathVariable placeId: Long,
-            @RequestParam isModifiedPlace: Boolean
+        @PathVariable placeId: Long,
+        @RequestParam isModifiedPlace: Boolean,
     ): ResponseEntity<Response> {
         placeInReviewService.acceptPlace(placeId, isModifiedPlace)
         return ResponseEntity(Response(true), HttpStatus.CREATED)
     }
 
-
-    //Send report back if there is any problem
+    // Send report back if there is any problem
     @PostMapping("report/{placeId}")
     fun reportProblemPlace(
-            @RequestBody problem: String,
-            @PathVariable placeId: Long,
-            @RequestParam isModifiedPlace: Boolean
+        @RequestBody problem: String,
+        @PathVariable placeId: Long,
+        @RequestParam isModifiedPlace: Boolean,
     ): ResponseEntity<Response> {
         placeInReviewService.addProblemToReview(placeId, problem, isModifiedPlace)
         return ResponseEntity(Response(true), HttpStatus.OK)

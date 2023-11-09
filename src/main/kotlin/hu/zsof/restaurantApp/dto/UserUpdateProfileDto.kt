@@ -7,5 +7,5 @@ class UserUpdateProfileDto(
     val password: String?,
     val image: String?,
     val email: String?,
-    val filters: Filter
+    val filters: Filter,
 )

@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.jwt.*
 import org.springframework.stereotype.Service
 import java.time.Instant
 
-
 @Service
 class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder: JwtDecoder) {
 
@@ -26,13 +25,13 @@ class SecurityService(private val jwtEncoder: JwtEncoder, private val jwtDecoder
     fun generateToken(user: MyUser): String {
         val now = Instant.now()
         val claims = JwtClaimsSet.builder()
-                .issuer(ISSUER)
-                .issuedAt(now)
-                .expiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toLong()))
-                .subject(user.id.toString())
-                .claim(CLAIM_USERNAME, user.email)
-                .claim(CLAIM_ROLE, user.userType)
-                .build()
+            .issuer(ISSUER)
+            .issuedAt(now)
+            .expiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toLong()))
+            .subject(user.id.toString())
+            .claim(CLAIM_USERNAME, user.email)
+            .claim(CLAIM_ROLE, user.userType)
+            .build()
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
     }
 

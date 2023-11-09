@@ -18,8 +18,8 @@ import java.util.*
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_OWNER')")
 @RequestMapping("/places-owner")
 class PlaceByOwnerController(
-        private val placeService: PlaceService,
-        private val placeInReviewService: PlaceInReviewService,
+    private val placeService: PlaceService,
+    private val placeInReviewService: PlaceInReviewService,
 ) {
 
     /**
@@ -29,9 +29,9 @@ class PlaceByOwnerController(
     // Add new place - it will be stored in PlaceInReview table until admin checks it
     @PostMapping("new-place")
     fun newPlace(
-            @RequestBody placeInReview: PlaceInReview,
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestBody placeInReview: PlaceInReview,
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<PlaceInReviewDto> {
         val newPlaceInReview = placeInReviewService.savePlaceInReview(placeInReview, authentication.name.toLong())
         return ResponseEntity(newPlaceInReview.convertToDto(), HttpStatus.CREATED)
@@ -40,9 +40,9 @@ class PlaceByOwnerController(
     // Delete own place from Place table
     @DeleteMapping("places/{id}")
     fun deletePlaceById(
-            @PathVariable id: Long,
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @PathVariable id: Long,
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<Response> {
         placeService.deletePlaceByIdByUser(id, authentication.name.toLong())
         return ResponseEntity(Response(true), HttpStatus.OK)
@@ -51,7 +51,7 @@ class PlaceByOwnerController(
     // Delete any place from PlaceIntReview table
     @DeleteMapping("place-review/{id}")
     fun deletePlaceById(
-            @PathVariable id: Long,
+        @PathVariable id: Long,
     ): ResponseEntity<Response> {
         placeInReviewService.deletePlaceInReviewById(id)
         return ResponseEntity(Response(true), HttpStatus.OK)
@@ -59,8 +59,8 @@ class PlaceByOwnerController(
 
     @GetMapping("places")
     fun getAllPlaceByOwner(
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<List<PlaceDto>> {
         val places: MutableList<Place> = placeService.getAllPlaceByOwner(authentication.name.toLong())
         return ResponseEntity<List<PlaceDto>>(places.convertToDto(), HttpStatus.OK)
@@ -68,8 +68,8 @@ class PlaceByOwnerController(
 
     @GetMapping("places-in-review")
     fun getAllPlaceInReviewByOwner(
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<List<PlaceInReviewDto>> {
         val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlaceInReviewByOwner(authentication.name.toLong())
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
@@ -78,16 +78,16 @@ class PlaceByOwnerController(
     // Get place from PlaceInReview table
     @GetMapping("/{id}")
     fun getPlaceById(
-            @PathVariable id: Long
+        @PathVariable id: Long,
     ): ResponseEntity<PlaceInReviewDto?> {
         return ResponseEntity(placeInReviewService.getPlaceInReviewById(id).convertToDto(), HttpStatus.OK)
     }
 
     @PostMapping("update")
     fun updatePlace(
-            @RequestBody place: Place,
-            @RequestHeader(TOKEN_NAME) token: String,
-            authentication: Authentication
+        @RequestBody place: Place,
+        @RequestHeader(TOKEN_NAME) token: String,
+        authentication: Authentication,
     ): ResponseEntity<PlaceDto> {
         val modifiedPlace = placeService.updatePlace(place, authentication.name.toLong()).convertToDto()
         return ResponseEntity(modifiedPlace, HttpStatus.OK)

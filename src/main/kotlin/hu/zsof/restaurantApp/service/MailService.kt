@@ -11,13 +11,12 @@ import javax.mail.Message
 
 @Service
 class MailService constructor(
-        private val javaMailSender: JavaMailSender,
-        private val restaurantConfigurations: RestaurantConfigurations
+    private val javaMailSender: JavaMailSender,
+    private val restaurantConfigurations: RestaurantConfigurations,
 ) {
     companion object {
         const val EMAIL_FROM = "taprakihh@gmail.com"
     }
-
 
     fun sendVerifyRegisterEmail(user: MyUser) {
         val mimeMessage = javaMailSender.createMimeMessage()
@@ -40,5 +39,4 @@ class MailService constructor(
             throw MyException("Message template null", HttpStatus.NOT_FOUND)
         }
     }
-
 }
