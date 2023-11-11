@@ -95,8 +95,8 @@ class PlaceByOwnerControllerTests {
         // Arrange
         `when`(placeInReviewRepository.findAll()).thenReturn(
             listOf(
-                PlaceInReview(id = 1, name = "Alma Fagyizó", user = MyUser(id = 1)),
-                PlaceInReview(id = 2, name = "Körte Étterem", user = MyUser(id = 1)),
+                PlaceInReview(id = 1, name = "Alma Fagyizó", creator = MyUser(id = 1)),
+                PlaceInReview(id = 2, name = "Körte Étterem", creator = MyUser(id = 1)),
             ),
         )
 
@@ -116,7 +116,7 @@ class PlaceByOwnerControllerTests {
         `when`(placeInReviewRepository.save(any())).thenAnswer { i: InvocationOnMock -> i.arguments[0] }
 
         // Act
-        val response = controller.newPlace(PlaceInReview(id = 1, name = "Alma Fagyizó", user = MyUser(id = 1)), authentication)
+        val response = controller.newPlace(PlaceInReview(id = 1, name = "Alma Fagyizó", creator = MyUser(id = 1)), authentication)
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.statusCode)
@@ -146,7 +146,7 @@ class PlaceByOwnerControllerTests {
         // Arrange
         doNothing().`when`(placeInReviewRepository).deleteById(anyLong())
         `when`(placeInReviewRepository.findById(anyLong())).thenReturn(
-            Optional.of(PlaceInReview(id = 1, user = MyUser(id = 1))),
+            Optional.of(PlaceInReview(id = 1, creator = MyUser(id = 1))),
         )
         `when`(placeInReviewRepository.existsById(anyLong())).thenReturn((true))
 

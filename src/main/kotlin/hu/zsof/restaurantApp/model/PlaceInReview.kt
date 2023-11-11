@@ -16,7 +16,6 @@ class PlaceInReview(
     var name: String = "",
 
     var address: String = "",
-    var rate: Float? = 2.0f,
     var price: Price = Price.LOW,
     var image: String? = null,
     var phoneNumber: String? = null,
@@ -24,12 +23,11 @@ class PlaceInReview(
     var web: String? = null,
     var latitude: Double = 0.0,
     var longitude: Double = 0.0,
-    var usersNumber: Int = 0,
     var type: Type = Type.RESTAURANT,
 
     // Sok place-je lehet egy usernek -> MyUser táblában meg @OneToMany kell
     @ManyToOne
-    var user: MyUser = MyUser(),
+    var creator: MyUser = MyUser(),
 
     var problem: String? = null,
 
@@ -42,7 +40,6 @@ class PlaceInReview(
         return Place(
             name = this.name,
             address = this.address,
-            rate = this.rate,
             price = this.price,
             image = this.image,
             type = this.type,
@@ -51,10 +48,9 @@ class PlaceInReview(
             phoneNumber = this.phoneNumber,
             email = this.email,
             web = this.web,
-            usersNumber = this.usersNumber,
             latitude = this.latitude,
             longitude = this.longitude,
-            creator = MyUser(id = this.user.id),
+            creator = MyUser(id = this.creator.id),
         )
     }
 }
@@ -65,7 +61,6 @@ fun PlaceInReview.convertToDto(): PlaceInReviewDto {
         id = this.id,
         name = this.name,
         address = this.address,
-        // rate = this.rate,
         price = this.price,
         image = this.image,
         type = this.type,
@@ -74,10 +69,9 @@ fun PlaceInReview.convertToDto(): PlaceInReviewDto {
         phoneNumber = this.phoneNumber,
         email = this.email,
         web = this.web,
-        // usersNumber = this.usersNumber,
         problem = this.problem,
-        creatorName = this.user.name,
-        creatorId = this.user.id,
+        creatorName = this.creator.name,
+        creatorId = this.creator.id,
         latitude = this.latitude,
         longitude = this.longitude,
     )

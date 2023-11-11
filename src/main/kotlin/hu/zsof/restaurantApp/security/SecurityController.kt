@@ -8,18 +8,20 @@ import hu.zsof.restaurantApp.model.response.LoggedUserResponse
 import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.security.SecurityService.Companion.TOKEN_NAME
 import hu.zsof.restaurantApp.service.UserService
-import hu.zsof.restaurantApp.util.AuthUtils
 import hu.zsof.restaurantApp.util.ValidationUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/auth")
 class SecurityController(private val userService: UserService, private val securityService: SecurityService) {
+
+    val passwordEncoder = BCryptPasswordEncoder()
 
     @GetMapping
     fun authorize(
@@ -50,7 +52,7 @@ class SecurityController(private val userService: UserService, private val secur
                 userService.createUser(
                     MyUser(
                         email = loginData.email,
-                        password = AuthUtils.passwordEncoder.encode(loginData.password),
+                        password = passwordEncoder.encode(loginData.password),
                         name = loginData.name,
                     ),
                     isAdmin ?: false,
@@ -71,8 +73,5 @@ class SecurityController(private val userService: UserService, private val secur
 
         return " <h2 style='color:DodgerBlue\n;'>Sikeresen regisztráltad az email címed!</h2>" +
             "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot.</a>"
-
-        // real:
-        // return ResponseEntity(Response(true, "VERIFICATION_SUCCESS", ""), HttpStatus.OK)
     }
 }

@@ -9,8 +9,6 @@ class PlaceDto(
     val id: Long = 0,
     val name: String = "",
     val address: String = "",
-    val rate: Float? = 2.0f,
-    val ratedUsersNum: Int? = 0,
     val price: Price = Price.LOW,
     val image: String? = null,
     val type: Type = Type.RESTAURANT,

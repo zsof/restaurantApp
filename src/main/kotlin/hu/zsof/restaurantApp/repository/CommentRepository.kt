@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository
 interface CommentRepository : JpaRepository<Comment, Long> {
 
     fun findAllByPlaceId(placeId: Long): List<Comment>
-    fun findAllByUserId(userId: Long): List<Comment>
 }

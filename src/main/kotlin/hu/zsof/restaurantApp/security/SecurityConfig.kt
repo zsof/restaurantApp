@@ -32,11 +32,10 @@ import java.util.stream.Collectors
 @Configuration
 @EnableWebSecurity(debug = false)
 @EnableMethodSecurity
-class SecurityConfig2(
+class SecurityConfig(
     private val securityUserDetailService: UserSecurityDetailService,
     private val configurationProperties: ConfigurationProperties,
 ) {
-
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {

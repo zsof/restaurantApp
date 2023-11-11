@@ -28,7 +28,6 @@ class PlaceService(
             latitude = newPlace.latitude,
             longitude = newPlace.longitude,
             openDetails = newPlace.openDetails,
-            rate = newPlace.rate,
             usersNumber = 0,
             creator = newPlace.creator,
         )
@@ -119,7 +118,6 @@ class PlaceService(
             updatedPlace.openDetails = place.openDetails
 
             // These data can not change by update the place
-            updatedPlace.rate = updatedPlace.rate
             updatedPlace.usersNumber = updatedPlace.usersNumber
             updatedPlace.creator = updatedPlace.creator
 

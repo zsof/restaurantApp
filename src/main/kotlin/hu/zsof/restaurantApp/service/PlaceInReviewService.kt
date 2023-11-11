@@ -34,9 +34,7 @@ class PlaceInReviewService(
             latitude = newPlace.latitude,
             longitude = newPlace.longitude,
             openDetails = newPlace.openDetails,
-            rate = newPlace.rate,
-            usersNumber = 0,
-            user = MyUser(userId),
+            creator = MyUser(userId),
             problem = null,
         )
         return placeInReviewRepository.save(theNewPlace)
@@ -52,7 +50,7 @@ class PlaceInReviewService(
     fun getAllPlaceInReviewByOwner(creatorId: Long): MutableList<PlaceInReview> {
         val ownerPlaces = mutableListOf<PlaceInReview>()
         placeInReviewRepository.findAll().forEach {
-            if (it.user.id == creatorId) {
+            if (it.creator.id == creatorId) {
                 ownerPlaces.add(it)
             }
         }
@@ -79,7 +77,7 @@ class PlaceInReviewService(
 
     fun deletePlaceInReviewByIdByUser(placeInReviewId: Long, creatorId: Long) {
         val placeInReview = getPlaceInReviewById(placeInReviewId)
-        if (placeInReview.user.id == creatorId) {
+        if (placeInReview.creator.id == creatorId) {
             ResourceUtil.deleteImage(placeInReview.image)
             deletePlaceInReviewById(placeInReviewId)
         } else {
