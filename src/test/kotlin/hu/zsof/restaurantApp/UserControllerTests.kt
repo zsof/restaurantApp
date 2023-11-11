@@ -80,7 +80,7 @@ class UserControllerTests {
 
         // Act
         val response = controller.updateProfile(
-            UserUpdateProfileDto(name = "Béla", filters = Filter(), image = null),
+            UserUpdateProfileDto(name = "Béla", filters = Filter(glutenFree = true), image = "PxcF23D_ew"),
             authentication,
         )
 
@@ -89,6 +89,8 @@ class UserControllerTests {
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals("Béla", response.body?.name)
         assertNotEquals("Alma", response.body?.name)
+        assertEquals(true, response.body?.filterItems?.glutenFree)
+        assertNotEquals(true, response.body?.filterItems?.dogFriendly)
     }
 
     @Test
