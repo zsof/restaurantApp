@@ -117,14 +117,9 @@ class PlaceService(
             updatedPlace.longitude = place.longitude
             updatedPlace.openDetails = place.openDetails
 
-            // These data can not change by update the place
-            updatedPlace.usersNumber = updatedPlace.usersNumber
-            updatedPlace.creator = updatedPlace.creator
-
             updatedPlace.isModified = true
-            updatedPlace.isVisible = updatedPlace.isVisible
 
-            // Save place from
+            // Save place
             return placeRepository.save(updatedPlace)
         } else {
             throw MyException("User has no permission to update this place", HttpStatus.BAD_REQUEST)
