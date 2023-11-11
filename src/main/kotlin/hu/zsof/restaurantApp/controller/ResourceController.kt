@@ -56,19 +56,23 @@ class ResourceController(
                 directory.mkdir()
             }
 
-            if (trimmedType == Constants.IMAGE_PLACE_TYPE || trimmedType == Constants.IMAGE_PLACE_IN_REVIEW_TYPE) {
-                imageDirectory = Constants.IMAGE_PLACE_PATH
-                imageDirectoryName = Constants.IMAGE_PLACE_PATH_NAME
-                val directoryPlaces = File(imageDirectory)
-                if (!directoryPlaces.exists()) {
-                    directoryPlaces.mkdir()
+            when (trimmedType) {
+                Constants.IMAGE_PLACE_TYPE, Constants.IMAGE_PLACE_IN_REVIEW_TYPE -> {
+                    imageDirectory = Constants.IMAGE_PLACE_PATH
+                    imageDirectoryName = Constants.IMAGE_PLACE_PATH_NAME
+                    val directoryPlaces = File(imageDirectory)
+                    if (!directoryPlaces.exists()) {
+                        directoryPlaces.mkdir()
+                    }
                 }
-            } else if (trimmedType == Constants.IMAGE_USER_TYPE) {
-                imageDirectory = Constants.IMAGE_USER_PATH
-                imageDirectoryName = Constants.IMAGE_USER_PATH_NAME
-                val directoryPlaces = File(Constants.IMAGE_USER_PATH)
-                if (!directoryPlaces.exists()) {
-                    directoryPlaces.mkdir()
+
+                Constants.IMAGE_USER_TYPE -> {
+                    imageDirectory = Constants.IMAGE_USER_PATH
+                    imageDirectoryName = Constants.IMAGE_USER_PATH_NAME
+                    val directoryPlaces = File(Constants.IMAGE_USER_PATH)
+                    if (!directoryPlaces.exists()) {
+                        directoryPlaces.mkdir()
+                    }
                 }
             }
 
@@ -80,29 +84,35 @@ class ResourceController(
                 imagePathToSave = "$imageDirectoryName-$newFileName.$extension"
             }
 
-            if (trimmedType == Constants.IMAGE_PLACE_IN_REVIEW_TYPE) {
-                val placeinReviewOptional = placeInReviewRepository.findById(typeIdLong)
-                if (placeinReviewOptional.isPresent) {
-                    val placeInReview = placeinReviewOptional.get()
-                    placeInReview.image = imagePathToSave
-                    placeInReviewRepository.save(placeInReview)
-                    ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+            when (trimmedType) {
+                Constants.IMAGE_PLACE_IN_REVIEW_TYPE -> {
+                    val placeinReviewOptional = placeInReviewRepository.findById(typeIdLong)
+                    if (placeinReviewOptional.isPresent) {
+                        val placeInReview = placeinReviewOptional.get()
+                        placeInReview.image = imagePathToSave
+                        placeInReviewRepository.save(placeInReview)
+                        ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+                    }
                 }
-            } else if (trimmedType == Constants.IMAGE_PLACE_TYPE) {
-                val placeOptional = placeRepository.findById(typeIdLong)
-                if (placeOptional.isPresent) {
-                    val place = placeOptional.get()
-                    place.image = imagePathToSave
-                    placeRepository.save(place)
-                    ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+
+                Constants.IMAGE_PLACE_TYPE -> {
+                    val placeOptional = placeRepository.findById(typeIdLong)
+                    if (placeOptional.isPresent) {
+                        val place = placeOptional.get()
+                        place.image = imagePathToSave
+                        placeRepository.save(place)
+                        ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+                    }
                 }
-            } else if (trimmedType == Constants.IMAGE_USER_TYPE) {
-                val userOptional = userRepository.findById(typeIdLong)
-                if (userOptional.isPresent) {
-                    val user = userOptional.get()
-                    user.image = imagePathToSave
-                    userRepository.save(user)
-                    ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+
+                Constants.IMAGE_USER_TYPE -> {
+                    val userOptional = userRepository.findById(typeIdLong)
+                    if (userOptional.isPresent) {
+                        val user = userOptional.get()
+                        user.image = imagePathToSave
+                        userRepository.save(user)
+                        ResponseEntity<HttpStatus>(HttpStatus.CREATED)
+                    }
                 }
             }
 

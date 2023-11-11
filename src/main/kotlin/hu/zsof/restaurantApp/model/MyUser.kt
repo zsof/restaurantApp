@@ -42,11 +42,3 @@ fun MyUser.convertToDto(): UserDto {
         this.filterItems,
     )
 }
-
-fun MutableList<MyUser>.convertToDto(): MutableList<UserDto> {
-    val userDtos = mutableListOf<UserDto>()
-    this.forEach {
-        userDtos.add(it.convertToDto())
-    }
-    return userDtos
-}

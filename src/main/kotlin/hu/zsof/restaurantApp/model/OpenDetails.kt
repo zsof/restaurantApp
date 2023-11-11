@@ -4,8 +4,6 @@ import javax.persistence.Embeddable
 
 @Embeddable
 class OpenDetails(
-    //  @DateTimeFormat(pattern = "HH:mm:ss")
-
     var basicOpen: String = "",
     var basicClose: String = "",
     var mondayOpen: String = "",

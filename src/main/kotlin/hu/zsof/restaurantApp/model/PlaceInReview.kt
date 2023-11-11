@@ -55,7 +55,6 @@ class PlaceInReview(
     }
 }
 
-// todo itt minden van convertálva?
 fun PlaceInReview.convertToDto(): PlaceInReviewDto {
     return PlaceInReviewDto(
         id = this.id,
