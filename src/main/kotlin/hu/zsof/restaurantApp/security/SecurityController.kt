@@ -26,7 +26,6 @@ class SecurityController(private val userService: UserService, private val secur
     @GetMapping
     fun authorize(
         @RequestHeader(TOKEN_NAME) token: String,
-        response: HttpServletResponse,
     ): ResponseEntity<LoggedUserResponse> {
         val verification = securityService.verifyToken(token)
         val user = userService.getUserById(verification.userId)
@@ -34,7 +33,10 @@ class SecurityController(private val userService: UserService, private val secur
     }
 
     @PostMapping("/login")
-    fun login(authentication: Authentication, response: HttpServletResponse): ResponseEntity<LoggedUserResponse> {
+    fun login(
+        authentication: Authentication,
+        response: HttpServletResponse,
+    ): ResponseEntity<LoggedUserResponse> {
         val user = userService.getUserByEmail(email = authentication.name)
 
         val token = securityService.generateToken(user = user)
@@ -43,7 +45,11 @@ class SecurityController(private val userService: UserService, private val secur
     }
 
     @PostMapping("/register")
-    fun register(@RequestBody loginData: LoginData, @RequestHeader isAdmin: Boolean?, @RequestHeader isOwner: Boolean?): ResponseEntity<Response> {
+    fun register(
+        @RequestBody loginData: LoginData,
+        @RequestHeader isAdmin: Boolean?,
+        @RequestHeader isOwner: Boolean?,
+    ): ResponseEntity<Response> {
         if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
             throw MyException("Email cím vagy jelszó üres.", HttpStatus.BAD_REQUEST)
         }
@@ -68,7 +74,10 @@ class SecurityController(private val userService: UserService, private val secur
     }
 
     @GetMapping("verify/{id}/{secret}")
-    fun verifyEmail(@PathVariable id: Long, @PathVariable secret: String): String {
+    fun verifyEmail(
+        @PathVariable id: Long,
+        @PathVariable secret: String,
+    ): String {
         userService.verifyEmail(id, secret)
 
         return " <h2 style='color:DodgerBlue\n;'>Sikeresen regisztráltad az email címed!</h2>" +
