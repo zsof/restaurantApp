@@ -9,7 +9,6 @@ import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_OWNER
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
-import hu.zsof.restaurantApp.util.ValidationUtils
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,8 +37,6 @@ class UserService(
         return savedUser
     }
 
-    fun getAllUser(): MutableList<MyUser> = userRepository.findAll()
-
     fun getUserById(id: Long): MyUser {
         val user = userRepository.findById(id)
         if (user.isPresent) {
@@ -58,14 +55,6 @@ class UserService(
         }
     }
 
-    fun deleteUserById(id: Long) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id)
-        } else {
-            throw MyException("User not found", HttpStatus.NOT_FOUND)
-        }
-    }
-
     fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): MyUser {
         val userOptional = userRepository.findById(userId)
         if (!userOptional.isPresent) {
@@ -73,27 +62,10 @@ class UserService(
         }
         val updateUser = userOptional.get()
 
-        if (!userUpdateProfileDto.email.isNullOrEmpty()) {
-            if (ValidationUtils.checkEmailValidation(userUpdateProfileDto.email)) {
-                updateUser.email = userUpdateProfileDto.email
-            } else {
-                throw MyException("Email address format is not correct", HttpStatus.BAD_REQUEST)
-            }
-        }
-
-        if (!userUpdateProfileDto.password.isNullOrEmpty()) {
-            if (ValidationUtils.checkPasswordValidation(userUpdateProfileDto.password)) {
-                updateUser.password = userUpdateProfileDto.password
-            } else {
-                throw MyException("Password format is not correct", HttpStatus.BAD_REQUEST)
-            }
-        }
-
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
         updateUser.filterItems = userUpdateProfileDto.filters
 
-        // updateUser.isAdmin = false
         return userRepository.save(updateUser)
     }
 

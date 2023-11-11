@@ -161,7 +161,7 @@ class PlaceByOwnerControllerTests {
     @Test
     fun testUpdatePlace() {
         // Arrange
-        `when`(placeRepository.findById(anyLong())).thenReturn(Optional.of(Place(creator = MyUser(id = 1))))
+        `when`(placeRepository.findById(anyLong())).thenReturn(Optional.of(Place(name = "Alma Fagyizó", creator = MyUser(id = 1))))
         `when`(placeRepository.save(any())).thenAnswer { i: InvocationOnMock -> i.arguments[0] }
 
         // Act
@@ -174,5 +174,6 @@ class PlaceByOwnerControllerTests {
         assertEquals(HttpStatus.OK, response.statusCode)
         assertNotNull(response.body)
         assertEquals("Alma Fagyizó2", response.body?.name)
+        assertNotEquals("Alma Fagyizó", response.body?.name)
     }
 }
