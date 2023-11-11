@@ -40,7 +40,7 @@ class PlaceInReviewController(private val placeInReviewService: PlaceInReviewSer
         @RequestParam isModifiedPlace: Boolean,
     ): ResponseEntity<Response> {
         placeInReviewService.acceptPlace(placeId, isModifiedPlace)
-        return ResponseEntity(Response(true), HttpStatus.CREATED)
+        return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
     // Send report back if there is any problem

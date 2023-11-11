@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
+    id("org.sonarqube") version "4.2.1.3168"
 }
 
 group = "hu.zsof"
@@ -30,7 +31,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("com.auth0:java-jwt:4.2.1")
