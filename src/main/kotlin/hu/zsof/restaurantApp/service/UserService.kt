@@ -6,7 +6,6 @@ import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
-import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_OWNER
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
 import org.springframework.http.HttpStatus
@@ -21,10 +20,8 @@ class UserService(
     private val userRepository: UserRepository,
     private val placeRepository: PlaceRepository,
 ) {
-    fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
-        if (isAdmin) {
-            newUser.userType = ROLE_ADMIN
-        } else if (isOwner) {
+    fun createUser(newUser: MyUser, isOwner: Boolean = false): MyUser {
+        if (isOwner) {
             newUser.userType = ROLE_OWNER
         } else {
             newUser.userType = ROLE_USER

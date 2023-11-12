@@ -107,7 +107,7 @@ class SecurityControllerTests {
         `when`(userRepository.save(any())).thenAnswer { i: InvocationOnMock -> i.arguments[0] }
 
         // Act
-        val response = controller.register(loginData, isAdmin = false, isOwner = false)
+        val response = controller.register(loginData, isOwner = false)
 
         // Assert
         assertNotNull(response.body)

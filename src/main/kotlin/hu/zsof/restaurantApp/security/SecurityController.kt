@@ -44,7 +44,6 @@ class SecurityController(private val userService: UserService, private val secur
     @PostMapping("/register")
     fun register(
         @RequestBody loginData: LoginData,
-        @RequestHeader isAdmin: Boolean?,
         @RequestHeader isOwner: Boolean?,
     ): ResponseEntity<Response> {
         if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
@@ -58,7 +57,6 @@ class SecurityController(private val userService: UserService, private val secur
                         password = ValidationUtils.passwordEncoder.encode(loginData.password),
                         name = loginData.name,
                     ),
-                    isAdmin ?: false,
                     isOwner ?: false,
                 )
             } catch (e: DataIntegrityViolationException) {
