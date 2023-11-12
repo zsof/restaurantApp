@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class UserSecurity (private val user: MyUser) : UserDetails {
+class UserSecurity(private val user: MyUser) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val auths: MutableList<SimpleGrantedAuthority> = ArrayList()
@@ -35,7 +35,6 @@ class UserSecurity (private val user: MyUser) : UserDetails {
     }
 
     override fun isEnabled(): Boolean {
-        return true
+        return user.isVerified
     }
-
 }

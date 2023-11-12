@@ -5,7 +5,6 @@ import hu.zsof.restaurantApp.dto.PlaceInReviewDto
 import hu.zsof.restaurantApp.model.*
 import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.service.PlaceInReviewService
-import hu.zsof.restaurantApp.service.PlaceService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,50 +14,43 @@ import java.util.*
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/places-review")
-class PlaceInReviewController(private val placeInReviewService: PlaceInReviewService, private val placeService: PlaceService) {
+class PlaceInReviewController(private val placeInReviewService: PlaceInReviewService) {
 
     /**
      * Methods that only admin can use
      */
 
-    // Get place from PlaceInReview table
-    @GetMapping("/{id}")
-    fun getPlaceById(
-            @PathVariable id: Long
-    ): ResponseEntity<PlaceInReviewDto?> {
-        return ResponseEntity(placeInReviewService.getPlaceById(id).convertToDto(), HttpStatus.OK)
-    }
-
     // Get all places from PlaceInReview table
     @GetMapping
     fun getAllPlace(): ResponseEntity<List<PlaceInReviewDto>> {
-        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlace()
+        val placesInReview: MutableList<PlaceInReview> = placeInReviewService.getAllPlaceInReview()
         return ResponseEntity<List<PlaceInReviewDto>>(placesInReview.convertToDto(), HttpStatus.OK)
     }
 
-    // Delete any place from Place table
-    @DeleteMapping("places/{id}")
-    fun deletePlaceById(
-            @PathVariable id: Long,
-    ): ResponseEntity<Response> {
-        placeInReviewService.deletePlaceById(id)
-        return ResponseEntity(Response(true), HttpStatus.OK)
+    // Get the modified items from Place table
+    @GetMapping("places/modified")
+    fun getModifiedPlaces(): ResponseEntity<List<PlaceDto>> {
+        val modifiedPlaces: MutableList<Place> = placeInReviewService.getModifiedPlaces()
+        return ResponseEntity<List<PlaceDto>>(modifiedPlaces.convertToDto(), HttpStatus.OK)
     }
 
     @PostMapping("accept/{placeId}")
     fun acceptPlace(
-            @PathVariable placeId: Long,
-    ): ResponseEntity<PlaceDto> {
-        return ResponseEntity(placeInReviewService.acceptPlace(placeId).convertToDto(), HttpStatus.CREATED)
+        @PathVariable placeId: Long,
+        @RequestParam isModifiedPlace: Boolean,
+    ): ResponseEntity<Response> {
+        placeInReviewService.acceptPlace(placeId, isModifiedPlace)
+        return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
-
-    //Send report back if there is any problem
+    // Send report back if there is any problem
     @PostMapping("report/{placeId}")
     fun reportProblemPlace(
-            @RequestBody problem: String,
-            @PathVariable placeId: Long,
-    ): ResponseEntity<PlaceInReviewDto> {
-        return ResponseEntity(placeInReviewService.addProblemToReview(placeId, problem).convertToDto(), HttpStatus.OK)
+        @RequestBody problem: String,
+        @PathVariable placeId: Long,
+        @RequestParam isModifiedPlace: Boolean,
+    ): ResponseEntity<Response> {
+        placeInReviewService.addProblemToReview(placeId, problem, isModifiedPlace)
+        return ResponseEntity(Response(true), HttpStatus.OK)
     }
 }

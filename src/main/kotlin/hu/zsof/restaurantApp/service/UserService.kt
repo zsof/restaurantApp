@@ -1,39 +1,41 @@
 package hu.zsof.restaurantApp.service
 
-import hu.zsof.restaurantApp.dto.PlaceDto
-import hu.zsof.restaurantApp.dto.UserDto
 import hu.zsof.restaurantApp.dto.UserUpdateProfileDto
 import hu.zsof.restaurantApp.exception.MyException
 import hu.zsof.restaurantApp.model.MyUser
 import hu.zsof.restaurantApp.model.Place
-import hu.zsof.restaurantApp.model.convertToDto
 import hu.zsof.restaurantApp.repository.PlaceRepository
 import hu.zsof.restaurantApp.repository.UserRepository
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_ADMIN
+import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_OWNER
 import hu.zsof.restaurantApp.security.SecurityService.Companion.ROLE_USER
-import hu.zsof.restaurantApp.util.AuthUtils
-import hu.zsof.restaurantApp.util.ValidationUtils
-import org.hibernate.exception.ConstraintViolationException
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 @Transactional
-class UserService(private val userRepository: UserRepository, private val placeRepository: PlaceRepository) {
-    fun createUser(newUser: MyUser, isAdmin: Boolean = false): MyUser {
-        //TODO ezt majd kiszedni
-        if(isAdmin) {
+class UserService(
+    private val mailService: MailService,
+    private val userRepository: UserRepository,
+    private val placeRepository: PlaceRepository,
+) {
+    fun createUser(newUser: MyUser, isAdmin: Boolean = false, isOwner: Boolean = false): MyUser {
+        if (isAdmin) {
             newUser.userType = ROLE_ADMIN
-        }
-        else {
+        } else if (isOwner) {
+            newUser.userType = ROLE_OWNER
+        } else {
             newUser.userType = ROLE_USER
         }
-        return userRepository.save(newUser)
-    }
+        newUser.isVerified = false
+        newUser.verificationSecret = UUID.randomUUID().toString()
 
-    fun getAllUser(): MutableList<MyUser> = userRepository.findAll()
+        val savedUser = userRepository.save(newUser)
+        mailService.sendVerifyRegisterEmail(savedUser)
+        return savedUser
+    }
 
     fun getUserById(id: Long): MyUser {
         val user = userRepository.findById(id)
@@ -51,16 +53,6 @@ class UserService(private val userRepository: UserRepository, private val placeR
         } else {
             throw MyException("User not found", HttpStatus.NOT_FOUND)
         }
-
-    }
-
-    fun deleteUserById(id: Long) {
-
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id)
-        } else {
-            throw MyException("User not found", HttpStatus.NOT_FOUND)
-        }
     }
 
     fun updateProfile(userId: Long, userUpdateProfileDto: UserUpdateProfileDto): MyUser {
@@ -70,29 +62,10 @@ class UserService(private val userRepository: UserRepository, private val placeR
         }
         val updateUser = userOptional.get()
 
-
-
-        if (!userUpdateProfileDto.email.isNullOrEmpty()) {
-            if (ValidationUtils.checkEmailValidation(userUpdateProfileDto.email)) {
-                updateUser.email = userUpdateProfileDto.email
-            } else {
-                throw MyException("Email address format is not correct", HttpStatus.BAD_REQUEST)
-            }
-        }
-
-        if (!userUpdateProfileDto.password.isNullOrEmpty()) {
-            if (ValidationUtils.checkPasswordValidation(userUpdateProfileDto.password)) {
-                updateUser.password = userUpdateProfileDto.password
-            }else {
-                throw MyException("Password format is not correct", HttpStatus.BAD_REQUEST)
-            }
-        }
-
         updateUser.image = userUpdateProfileDto.image ?: updateUser.image
         updateUser.name = userUpdateProfileDto.name ?: updateUser.name
-        updateUser.nickName = userUpdateProfileDto.nickName ?: updateUser.nickName
+        updateUser.filterItems = userUpdateProfileDto.filters
 
-        //updateUser.isAdmin = false
         return userRepository.save(updateUser)
     }
 
@@ -119,7 +92,6 @@ class UserService(private val userRepository: UserRepository, private val placeR
         placeRepository.save(place)
 
         return userRepository.save(user)
-
     }
 
     fun getFavPlaces(userId: Long): MutableList<Place> {
@@ -132,5 +104,25 @@ class UserService(private val userRepository: UserRepository, private val placeR
         val userFavPlaceIds = userOptional.get().favPlaceIds
 
         return placeRepository.findAllById(userFavPlaceIds)
+    }
+
+    fun verifyEmail(id: Long, secret: String) {
+        val user = getUserById(id)
+        if (user.verificationSecret == secret) {
+            user.isVerified = true
+            userRepository.save(user)
+        } else {
+            throw MyException("Secret is wrong", HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    fun getUserNameById(userId: Long): String {
+        val user = userRepository.findById(userId)
+
+        return if (user.isPresent) {
+            user.get().name
+        } else {
+            "Törölt felhasználó"
+        }
     }
 }

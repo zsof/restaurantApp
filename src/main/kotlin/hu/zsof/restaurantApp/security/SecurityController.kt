@@ -8,12 +8,12 @@ import hu.zsof.restaurantApp.model.response.LoggedUserResponse
 import hu.zsof.restaurantApp.model.response.Response
 import hu.zsof.restaurantApp.security.SecurityService.Companion.TOKEN_NAME
 import hu.zsof.restaurantApp.service.UserService
-import hu.zsof.restaurantApp.util.AuthUtils
 import hu.zsof.restaurantApp.util.ValidationUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 
@@ -21,48 +21,66 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/auth")
 class SecurityController(private val userService: UserService, private val securityService: SecurityService) {
 
+    val passwordEncoder = BCryptPasswordEncoder()
+
     @GetMapping
     fun authorize(
-            @RequestHeader(TOKEN_NAME) token: String,
-            response: HttpServletResponse
+        @RequestHeader(TOKEN_NAME) token: String,
     ): ResponseEntity<LoggedUserResponse> {
         val verification = securityService.verifyToken(token)
-
         val user = userService.getUserById(verification.userId)
         return ResponseEntity(LoggedUserResponse(true, "", "", user.convertToDto()), HttpStatus.OK)
-
     }
 
     @PostMapping("/login")
-    fun login(authentication: Authentication, response: HttpServletResponse): ResponseEntity<LoggedUserResponse> {
+    fun login(
+        authentication: Authentication,
+        response: HttpServletResponse,
+    ): ResponseEntity<LoggedUserResponse> {
         val user = userService.getUserByEmail(email = authentication.name)
 
         val token = securityService.generateToken(user = user)
         response.addHeader(TOKEN_NAME, "Bearer $token")
-        return ResponseEntity(LoggedUserResponse(true, "", "Login Successful", user.convertToDto()), HttpStatus.OK)
+        return ResponseEntity(LoggedUserResponse(true, "", "Belépés sikeres!", user.convertToDto()), HttpStatus.OK)
     }
 
-    //TODO majd kiszedni az isADmin részt
     @PostMapping("/register")
-    fun register(@RequestBody loginData: LoginData, @RequestHeader isAdmin: Boolean?): ResponseEntity<Response> {
+    fun register(
+        @RequestBody loginData: LoginData,
+        @RequestHeader isAdmin: Boolean?,
+        @RequestHeader isOwner: Boolean?,
+    ): ResponseEntity<Response> {
         if (loginData.email.isEmpty() || loginData.password.isEmpty()) {
-            throw MyException("Email or password is empty", HttpStatus.BAD_REQUEST)
+            throw MyException("Email cím vagy jelszó üres.", HttpStatus.BAD_REQUEST)
         }
         if (ValidationUtils.checkEmailValidation(loginData.email) && ValidationUtils.checkPasswordValidation(loginData.password)) {
             try {
                 userService.createUser(
-                        MyUser(
-                                email = loginData.email, password = AuthUtils.passwordEncoder.encode(loginData.password), name = loginData.name, nickName = loginData.nickName
-                        ),
-                        isAdmin ?: false
+                    MyUser(
+                        email = loginData.email,
+                        password = passwordEncoder.encode(loginData.password),
+                        name = loginData.name,
+                    ),
+                    isAdmin ?: false,
+                    isOwner ?: false,
                 )
             } catch (e: DataIntegrityViolationException) {
-                throw MyException("Email is already in use", HttpStatus.BAD_REQUEST)
+                throw MyException("Ez az email cím már használatban van.", HttpStatus.BAD_REQUEST)
             }
-            return ResponseEntity(Response(true, "Register Successful", ""), HttpStatus.CREATED)
+            return ResponseEntity(Response(true, "Regisztráció sikeres! Kérlek aktiváld fiókodat.", ""), HttpStatus.CREATED)
         } else {
-            throw MyException("Email or password is invalid", HttpStatus.BAD_REQUEST)
+            throw MyException("Az email cím vagy jelszó helytelen.", HttpStatus.BAD_REQUEST)
         }
     }
 
+    @GetMapping("verify/{id}/{secret}")
+    fun verifyEmail(
+        @PathVariable id: Long,
+        @PathVariable secret: String,
+    ): String {
+        userService.verifyEmail(id, secret)
+
+        return " <h2 style='color:DodgerBlue\n;'>Sikeresen regisztráltad az email címed!</h2>" +
+            "<a href=\"https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew\">Nyisd meg az appot.</a>"
+    }
 }

@@ -12,7 +12,7 @@ class UserSecurityDetailService(private val userRepository: UserRepository) : Us
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(email: String): UserDetails {
         return userRepository.findUserByEmail(email)
-                .map { UserSecurity(it) }
-                .orElseThrow { UsernameNotFoundException("User not found: $email") }
+            .map { UserSecurity(it) }
+            .orElseThrow { UsernameNotFoundException("User not found: $email") }
     }
 }
