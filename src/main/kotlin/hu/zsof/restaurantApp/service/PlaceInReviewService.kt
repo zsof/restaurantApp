@@ -43,10 +43,10 @@ class PlaceInReviewService(
     // For admin
     fun getAllPlaceInReview(): MutableList<PlaceInReview> = placeInReviewRepository.findAll()
 
-    // From Place get modified places by owner -owner has to accept/report, but it must have nin the Place list, cannot delete from it
+    // From Place - get modified places by admin - admin has to accept/report, but it must have in the Place list, cannot delete from it
     fun getModifiedPlaces(): MutableList<Place> = placeRepository.findAll().filter { it.isModified }.toMutableList()
 
-    // For owner
+    // For owner - just the specific owner's places
     fun getAllPlaceInReviewByOwner(creatorId: Long): MutableList<PlaceInReview> {
         val ownerPlaces = mutableListOf<PlaceInReview>()
         placeInReviewRepository.findAll().forEach {
@@ -75,7 +75,7 @@ class PlaceInReviewService(
         }
     }
 
-    fun deletePlaceInReviewByIdByUser(placeInReviewId: Long, creatorId: Long) {
+    fun deletePlaceInReviewByIdByOwner(placeInReviewId: Long, creatorId: Long) {
         val placeInReview = getPlaceInReviewById(placeInReviewId)
         if (placeInReview.creator.id == creatorId) {
             ResourceUtil.deleteImage(placeInReview.image)

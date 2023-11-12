@@ -51,7 +51,7 @@ class PlaceByOwnerController(
         @PathVariable id: Long,
         authentication: Authentication,
     ): ResponseEntity<Response> {
-        placeInReviewService.deletePlaceInReviewByIdByUser(id, authentication.name.toLong())
+        placeInReviewService.deletePlaceInReviewByIdByOwner(id, authentication.name.toLong())
         return ResponseEntity(Response(true), HttpStatus.OK)
     }
 
