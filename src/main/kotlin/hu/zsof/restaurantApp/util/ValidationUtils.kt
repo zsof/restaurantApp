@@ -1,5 +1,6 @@
 package hu.zsof.restaurantApp.util
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.regex.Pattern
 
 object ValidationUtils {
@@ -8,6 +9,8 @@ object ValidationUtils {
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
     private val LETTER: Pattern = Pattern.compile("[A-z]", Pattern.CASE_INSENSITIVE)
     private val NUMBER: Pattern = Pattern.compile("[0-9]", Pattern.CASE_INSENSITIVE)
+
+    val passwordEncoder = BCryptPasswordEncoder()
 
     fun checkEmailValidation(email: String): Boolean {
         return EMAIL_REGEX_PATTERN.matcher(email).find()

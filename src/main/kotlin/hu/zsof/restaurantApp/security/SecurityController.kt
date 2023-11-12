@@ -13,15 +13,12 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/auth")
 class SecurityController(private val userService: UserService, private val securityService: SecurityService) {
-
-    val passwordEncoder = BCryptPasswordEncoder()
 
     @GetMapping
     fun authorize(
@@ -58,7 +55,7 @@ class SecurityController(private val userService: UserService, private val secur
                 userService.createUser(
                     MyUser(
                         email = loginData.email,
-                        password = passwordEncoder.encode(loginData.password),
+                        password = ValidationUtils.passwordEncoder.encode(loginData.password),
                         name = loginData.name,
                     ),
                     isAdmin ?: false,
