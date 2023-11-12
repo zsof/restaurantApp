@@ -2,9 +2,8 @@
 
 ### Lokális futtatás
 Az alkalmazás elérhető a Google Play-en: https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew
-Ehhez biztosítva van a szerver folyamatos működése.
 
-Azonban lokális futtatásra is lehetőség van:
+Ehhez biztosítva van a szerver folyamatos működése. Azonban lokális futtatásra is lehetőség van:
 
 1.lépés: Projekt klónozása
 2.lépés: 
