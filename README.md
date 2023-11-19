@@ -1,4 +1,54 @@
 # restaurantApp
+
+### Lokális futtatás
+Az alkalmazás elérhető a Google Play-en: https://play.google.com/store/apps/details?id=hu.zsof.restaurantappjetpacknew
+
+Ehhez biztosítva van a szerver folyamatos működése. 
+
+Azonban lokális futtatásra is lehetőség van, ehhez szükséges egy saját adatbázis biztosítása. Az útmutatóban egy H2 adatbázis létrehozását, és a Backend-el való összekapcsolást mutatom be:
+
+1. lépés: Projekt klónozása
+
+2. lépés: *build.gradle* fájlban a dependency-k között a kommentet ki kell szedni előle: <b>runtimeOnly("com.h2database:h2")</b>, majd szinkronizálás
+
+3. lépés: ***application.properties*** fájl létrehozása a *resources* mappába
+
+4. lépés: *application.properties* fájl konfigurálása:
+
+    Az email szerverhez tartozó *email-cím* és *jelszó* egyéni kitöltése szükséges, megfelelő / létező adatokkal
+
+   ```
+   server.port=8080
+   
+   #H2
+   spring.datasource.url=jdbc:h2:mem:restaurant
+   spring.datasource.driverClassName=org.h2.Driver
+   spring.datasource.username=h2
+   spring.datasource.password=password
+   spring.jpa.hibernate.ddl-auto=create
+   
+   rsa.private-key=classpath:private.pem
+   rsa.public-key=classpath:public.pem
+   
+   #email server
+   spring.mail.host=smtp.gmail.com
+   spring.mail.port=587
+   spring.mail.username=email@gmail.com
+   spring.mail.password=password
+   spring.mail.properties.mail.smtp.auth=true
+   spring.mail.properties.mail.smtp.starttls.enable=true
+   ```
+
+5. lépés - Opcionális: *RestaurantAppApplication* fájlban a kikomentezett rész használatával (és szükséges importok megadásával) érvényes teszt felhasználók jönnek létre, az ott megadott adatokkal. Így könnyebb a továbbiakban tesztelni az appot.
+
+6. Backend alkalmazás futtatása
+
+Androidon a következő lépések szükségesek:
+
+1. lépés: Android alkalmazás klónozása: https://github.com/zsof/RestaurantAppJetpackNew
+2. lépés: A *Constants.kt* fájlban a **BASE_URL** helyére a lokális Backend elérhetőséget kell írni
+3. lépés: A *Manifest* fájlban az **android:usesCleartextTraffic="false"**-t át kell írni *"true"*-ra
+4. lépés: Futtatás után az alkalmazás értelemszerűen használható. Regisztrációt követően az email-címre érkező verifikációs email-en a linkre kattintás kötelező, ezzel válik érvényesség a regisztrálás.
 ### About
 
 This project is being prepared as thesis work of the BME master's degree in Computer Science.
