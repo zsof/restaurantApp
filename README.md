@@ -5,7 +5,7 @@ Az alkalmazás elérhető a Google Play-en: https://play.google.com/store/apps/d
 
 Ehhez biztosítva van a szerver folyamatos működése. 
 
-Azonban lokális futtatásra is lehetőség van, ehhez szükséges egy saját adatbázis biztosítása. Az útmutatóban egy H2 adatbázis létrehozását, és a Backend-el való összekapcsolást mutatom be:
+Azonban lokális futtatásra is lehetőség van, ehhez szükséges egy saját adatbázis biztosítása. Az útmutatóban egy H2 adatbázis létrehozását, és a Backend-del való összekapcsolást mutatom be:
 
 1. lépés: Projekt klónozása
 
@@ -15,7 +15,7 @@ Azonban lokális futtatásra is lehetőség van, ehhez szükséges egy saját ad
 
 4. lépés: *application.properties* fájl konfigurálása:
 
-    Az email szerverhez tartozó *email-cím* és *jelszó* egyéni kitöltése szükséges, megfelelő / létező adatokkal
+    Az email szerverhez tartozó *email-cím* és *jelszó* egyéni kitöltése szükséges, létező adatokkal, valamint az email-cím megfelelő konfigurálásával a Gmail-en belül (https://mailmeteor.com/blog/gmail-smtp-settings#how-to-use-the-gmail-smtp-settings)
 
    ```
    server.port=8080
@@ -48,7 +48,7 @@ Androidon a következő lépések szükségesek:
 1. lépés: Android alkalmazás klónozása: https://github.com/zsof/RestaurantAppJetpackNew
 2. lépés: A *Constants.kt* fájlban a **BASE_URL** helyére a lokális Backend elérhetőséget kell írni
 3. lépés: A *Manifest* fájlban az **android:usesCleartextTraffic="false"**-t át kell írni *"true"*-ra
-4. lépés: Futtatás után az alkalmazás értelemszerűen használható. Regisztrációt követően az email-címre érkező verifikációs email-en a linkre kattintás kötelező, ezzel válik érvényesség a regisztrálás.
+4. lépés: Futtatás után az alkalmazás értelemszerűen használható. Regisztrációt követően az email-címre érkező verifikációs email-en a linkre kattintás kötelező, ezzel válik érvényessé a regisztrálás.
 ### About
 
 This project is being prepared as thesis work of the BME master's degree in Computer Science.
